@@ -1,0 +1,27 @@
+<h1>New Experiment</h1>
+<h2>Create Test Configuration</h2>
+<form action="{% url 'DataCollection:CreateNewExperiment' %}" method="post">
+  {% csrf_token %}
+  <label>Test ID</label>
+  <input type="text" name="s_TestId" id="s_TestIdInput">
+  <br>
+  <label>Test Description</label>
+  <input type="text" name="s_TestDesc" id="s_TestDescInput">
+  <br>
+  <label>Desired Temperature</label>
+  <input type="number" name="i_DesiredTemp" id="i_DesiredTempInput">
+  <br>
+  <label>Desired Voltage</label>
+  <input type="number" name="i_DesiredVoltage" id="i_DesiredVoltageInput">
+  <br>
+  <label>Desired Test Time</label>
+  <input type="number" name="i_DesiredTestTime" id="i_DesiredTestTimeInput">
+  <br>
+  <label>Desired Field</label>
+  <input type="number" name="i_DesiredField" id="i_DesiredFieldInput">
+  <br>
+  <label>Desired Serial Rate</label>
+  <input type="number" name="i_DesiredSerialRate" id="i_DesiredSerialRateInput">
+  <br>
+  <input type="submit" value="Go">
+</form>
