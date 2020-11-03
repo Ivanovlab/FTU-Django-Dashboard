@@ -4,10 +4,16 @@
 <h2>Test Configuration</h2>
 <p>Test ID: {{tc.s_TestId}}</p>
 <p>Test Description: {{tc.s_TestDesc}}</p>
-<p>Desired Temperature: {{tc.i_DesiredTemp}}</p>
-<p>Desired Voltage: {{tc.i_DesiredVoltage}}</p>
-<p>Desired Test Time: {{tc.i_DesiredTestTime}}</p>
-<p>Desired Field: {{tc.i_DesiredField}}</p>
-<p>Desired Serial Rate: {{tc.i_DesiredSerialRate}}</p>
+<p>Desired Temperature: {{tc.i_DesiredTemp}} (Centigrade)</p>
+<p>Desired Voltage: {{tc.i_DesiredVoltage}} (Volts)</p>
+<p>Desired Test Time: {{tc.i_DesiredTestTime}} (Seconds)</p>
+<p>Desired Field: {{tc.i_DesiredField}} (Milli-Teslas)</p>
+<p>Desired Serial Rate: {{tc.i_DesiredSerialRate}} </p>
+<h3>Experiments which use this configuration:</h3>
+<ul>
+{% for exp in l_experiments %}
+  <li><a href="{% url 'DataCollection:ExperimentDetail' exp.s_ExperimentId %}">{{ exp }}</a></li>
+{% endfor %}
+</ul>
 <p><a href="{% url 'DataCollection:index' %}">Go Back to Index Page</a></p>
 <p><a href="{% url 'DataCollection:TestConfigurations' %}">Go Back to Test Configurations Page</a></p>

@@ -83,8 +83,10 @@ def CreateNewTestConfiguration(request):
 def TestConfigurationDetail(request, s_TestId):
     # Get tc by Id
     tc = TestConfiguration.objects.get(s_TestId = s_TestId)
+    l_experiments = tc.experiment_set.all()
     ctx = {
         'tc': tc,
+        'l_experiments': l_experiments,
     }
     return render(request, 'DataCollection/TestConfigurationDetail.html', ctx)
 
