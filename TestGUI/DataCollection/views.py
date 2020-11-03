@@ -180,6 +180,8 @@ def GeneratePlot(request, s_ResultsFile):
         plt.cla()
         plt.plot(a_XValues, a_YValues)
         plt.title(s_Title)
+        plt.xlabel(f"{X[0, int(s_XValuesLabel)]}")
+        plt.ylabel(f"{X[0, int(s_YValuesLabel)]}")
         plt.grid()
         s_FilePath = './DataCollection/TestResults/Figures/Save.png'
         filePath = os.path.join(settings.MEDIA_ROOT, s_FilePath)
