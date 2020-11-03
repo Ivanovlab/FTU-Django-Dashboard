@@ -11,25 +11,45 @@
 #   2020-11-02: Created by Rohit
 #
 ##################################
-# Imports ------------------------
-from django.shortcuts import render
+# Imports ----------------------------------------------------------------------
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import TestConfiguration, Experiment
 
-# Functions ----------------------
+# Index Functions --------------------------------------------------------------
+#################################
+#   Function Name: index
+#   Function Author: Rohit
+#   Function Description: Renders the index page
+#   Inputs: request | Outputs: index.html {ctx}
+#################################
 def index(request):
-    latest_experiment_list = Experiment.objects.all()[:5]
+    return render(request, 'DataCollection/index.html')
+# Sub-Menu Functions -----------------------------------------------------------
+# ..... TestConfigurations .....................................................
+#################################
+#   Function Name: TestConfigurations
+#   Function Author: Rohit
+#   Function Description: Renders the TestConfigurations page
+#   Inputs: request | Outputs: index.html {ctx}
+#################################
+def TestConfigurations(request):
+    l_TestConfigurations = TestConfiguration.objects.all()
     context = {
-        'latest_experiment_list': latest_experiment_list,
+        'l_TestConfigurations': l_TestConfigurations,
     }
-
-    return render(request, 'DataCollection/index.html', context)
-
-def NewExperiment(request):
-    return render(request, 'DataCollection/NewExperiment.html')
-
+    return render(request, 'DataCollection/TestConfigurations.html', context)
+#################################
+#   Function Name: CreateNewTestConfiguration
+#   Function Author: Rohit
+#   Function Description: Creates new TestConfiguration and loads
+#                           TestConfigurations page again
+#   Inputs: request | Outputs: index.html {ctx}
+#################################
 def CreateNewTestConfiguration(request):
+    # Create our new base TestConfiguration object
     t = TestConfiguration()
+    # The form data is accessed by request.POST.get()
     t.s_TestId          = request.POST.get('s_TestId')
     t.s_TestDesc        = request.POST.get('s_TestDesc')
     t.i_DesiredTemp     = int(request.POST.get('i_DesiredTemp'))
@@ -37,19 +57,22 @@ def CreateNewTestConfiguration(request):
     t.i_DesiredTestTime = int(request.POST.get('i_DesiredTestTime'))
     t.i_DesiredField    = int(request.POST.get('i_DesiredField'))
     t.i_DesiredSerialRate = int(request.POST.get('i_DesiredSerialRate'))
+    # Save our new form
     t.save()
     l_TestConfigurations = TestConfiguration.objects.all()
     context = {
         'l_TestConfigurations': l_TestConfigurations,
     }
-    return render(request, 'DataCollection/TestConfigurations.html', context)
+    # Redirect
+    return redirect('/DataCollection/TestConfigurations')
 
-def TestConfigurations(request):
-    l_TestConfigurations = TestConfiguration.objects.all()
-    context = {
-        'l_TestConfigurations': l_TestConfigurations,
-    }
-    return render(request, 'DataCollection/TestConfigurations.html', context)
+
+
+
+def NewExperiment(request):
+    return render(request, 'DataCollection/NewExperiment.html')
+
+
 
 def ExperimentHistory(request):
     l_RecentExperiments = Experiment.objects.all()
