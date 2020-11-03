@@ -2,7 +2,7 @@
   <h2>Previous Experiments</h2>
   <ul>
     {% for exp in l_RecentExperiments %}
-    <li><a href="/DataCollection/{{ exp.s_ExperimentId }}">{{ exp.s_ExperimentName }}</a></li>
+    <li><a href="{% url 'DataCollection:ExperimentDetail' experiment_id %}">{{ exp.s_ExperimentName }}</a></li>
     {% endfor %}
   </ul>
 {% else %}

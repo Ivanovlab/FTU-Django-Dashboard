@@ -1,6 +1,16 @@
-<h1>New Experiment</h1>
+<h1>Test Configurations</h1>
+<h2>View Existing Configurations</h2>
+{% if l_TestConfigurations %}
+<ul>
+  {% for tc in l_TestConfigurations %}
+  <li><a href="#"></a>{{ tc }}</li>
+  {% endfor %}
+</ul>
+{% else %}
+  <p>No Test Configurations Exist</p>
+{% endif %}
 <h2>Create Test Configuration</h2>
-<form action="{% url 'DataCollection:CreateNewExperiment' %}" method="post">
+<form action="{% url 'DataCollection:CreateNewTestConfiguration' %}" method="post">
   {% csrf_token %}
   <label>Test ID</label>
   <input type="text" name="s_TestId" id="s_TestIdInput">
@@ -23,5 +33,5 @@
   <label>Desired Serial Rate</label>
   <input type="number" name="i_DesiredSerialRate" id="i_DesiredSerialRateInput">
   <br>
-  <input type="submit" value="Go">
+  <input type="submit" value="Create">
 </form>

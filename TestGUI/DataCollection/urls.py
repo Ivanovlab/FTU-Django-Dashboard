@@ -19,9 +19,9 @@ from . import views
 app_name = 'DataCollection'
 urlpatterns = [
     path('', views.index, name='index'),
-    path('<int:experiment_id>/', views.ExperimentDetail, name='ExperimentDetail'),
     path('NewExperiment/', views.NewExperiment, name="NewExperiment"),
-    path('CreateNewExperiment/', views.CreateNewExperiment, name="CreateNewExperiment"),
     path('CreateNewTestConfiguration/', views.CreateNewTestConfiguration, name="CreateNewTestConfiguration"),
-    path('ExperimentHistory/', views.ExperimentHistory, name="ExperimentHistory")
+    path('TestConfigurations/', views.TestConfigurations, name="TestConfigurations"),
+    path('ExperimentHistory/',  views.ExperimentHistory, name="ExperimentHistory"),
+    path('ExperimentDetail/<int:experiment_id>/', views.ExperimentDetail, name="ExperimentDetail"),
 ]

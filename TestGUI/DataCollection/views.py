@@ -25,14 +25,10 @@ def index(request):
 
     return render(request, 'DataCollection/index.html', context)
 
-def ExperimentDetail(request, experiment_id):
-    latest_experiment_list = Experiment.objects
-    return HttpResponse("Vibe Check: #%s" % experiment_id)
-
 def NewExperiment(request):
     return render(request, 'DataCollection/NewExperiment.html')
 
-def CreateNewExperiment(request):
+def CreateNewTestConfiguration(request):
     t = TestConfiguration()
     t.s_TestId          = request.POST.get('s_TestId')
     t.s_TestDesc        = request.POST.get('s_TestDesc')
@@ -42,11 +38,18 @@ def CreateNewExperiment(request):
     t.i_DesiredField    = int(request.POST.get('i_DesiredField'))
     t.i_DesiredSerialRate = int(request.POST.get('i_DesiredSerialRate'))
     t.save()
+    l_TestConfigurations = TestConfiguration.objects.all()
+    context = {
+        'l_TestConfigurations': l_TestConfigurations,
+    }
+    return render(request, 'DataCollection/TestConfigurations.html', context)
 
-    return render(request, 'DataCollection/NewExperiment.html')
-
-def CreateNewTestConfiguration(request):
-    return render(request, 'DataCollection/NewTestConfiguration.html')
+def TestConfigurations(request):
+    l_TestConfigurations = TestConfiguration.objects.all()
+    context = {
+        'l_TestConfigurations': l_TestConfigurations,
+    }
+    return render(request, 'DataCollection/TestConfigurations.html', context)
 
 def ExperimentHistory(request):
     l_RecentExperiments = Experiment.objects.all()
@@ -54,3 +57,10 @@ def ExperimentHistory(request):
         'l_RecentExperiments': l_RecentExperiments,
     }
     return render(request, 'DataCollection/ExperimentHistory.html', context)
+
+def ExperimentDetail(request, experiment_id):
+    experiment = Experiment.objects.get(pk=experiment_id)
+    context = {
+        'experiment': experiment,
+    }
+    return render(request, 'DataCollection/ExperimentDetail.html', context)
