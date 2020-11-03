@@ -8,3 +8,87 @@
 <p>Desired Field: {{tc.i_DesiredField}}</p>
 <p>Desired Serial Rate: {{tc.i_DesiredSerialRate}}</p>
 <h3><a href="{% url 'DataCollection:DownloadResults' experiment.s_ResultsFile %}">Download Test Results (.csv)</a></h3>
+<h3>Create Plot</h3>
+<form action="{% url 'DataCollection:GeneratePlot' experiment.s_ResultsFile %}" method="post">
+{% csrf_token %}
+<label>X-Axis Values</label>
+<select name="s_XValuesLabel">
+  <option value="1">Time</option>
+  <option value="2">Temperature</option>
+  <option value="3">Magnetic Field</option>
+  <option value="4">Test Stop</option>
+  <option value="5">Test Error</option>
+  <option value="6">Error Message</option>
+  <option value="7">DIFF0</option>
+  <option value="8">PWM Duty</option>
+  <option value="9">PWM Average</option>
+  <option value="10">DIFF3</option>
+  <option value="11">DIFF4</option>
+  <option value="12">DIFF5</option>
+  <option value="13">DIFF6</option>
+  <option value="14">DIFF7</option>
+  <option value="15">AIN0</option>
+  <option value="16">AIN1</option>
+  <option value="17">AIN2</option>
+  <option value="18">AIN3</option>
+  <option value="15">AIN4</option>
+  <option value="16">AIN5</option>
+  <option value="17">AIN6</option>
+  <option value="18">AIN7</option>
+  <option value="15">AIN8</option>
+  <option value="16">AIN9</option>
+  <option value="17">AIN10</option>
+  <option value="18">AIN11</option>
+  <option value="19">AIN12</option>
+  <option value="20">AIN13</option>
+  <option value="21">AIN14</option>
+  <option value="22">AIN15</option>
+  <option value="23">OFFSET</option>
+  <option value="24">VCC</option>
+  <option value="25">TEMP</option>
+  <option value="26">GAIN</option>
+  <option value="27">REF</option>
+</select>
+
+<br>
+<label>Y-Axis Values</label>
+<select name="s_YValuesLabel">
+  <option value="1">Time</option>
+  <option value="2">Temperature</option>
+  <option value="3">Magnetic Field</option>
+  <option value="4">Test Stop</option>
+  <option value="5">Test Error</option>
+  <option value="6">Error Message</option>
+  <option value="7">DIFF0</option>
+  <option value="8">PWM Duty</option>
+  <option value="9">PWM Average</option>
+  <option value="10">DIFF3</option>
+  <option value="11">DIFF4</option>
+  <option value="12">DIFF5</option>
+  <option value="13">DIFF6</option>
+  <option value="14">DIFF7</option>
+  <option value="15">AIN0</option>
+  <option value="16">AIN1</option>
+  <option value="17">AIN2</option>
+  <option value="18">AIN3</option>
+  <option value="15">AIN4</option>
+  <option value="16">AIN5</option>
+  <option value="17">AIN6</option>
+  <option value="18">AIN7</option>
+  <option value="15">AIN8</option>
+  <option value="16">AIN9</option>
+  <option value="17">AIN10</option>
+  <option value="18">AIN11</option>
+  <option value="19">AIN12</option>
+  <option value="20">AIN13</option>
+  <option value="21">AIN14</option>
+  <option value="22">AIN15</option>
+  <option value="23">OFFSET</option>
+  <option value="24">VCC</option>
+  <option value="25">TEMP</option>
+  <option value="26">GAIN</option>
+  <option value="27">REF</option>
+</select>
+<br>
+<input type="submit" value="Perform">
+</form>

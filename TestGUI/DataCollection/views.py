@@ -19,6 +19,11 @@ from .models import TestConfiguration, Experiment
 import os
 from django.conf import settings
 from django.http import HttpResponse, Http404
+import csv
+import pandas as pd
+import numpy as np
+from matplotlib import pyplot as plt
+from pathlib import Path
 # Index Functions --------------------------------------------------------------
 #################################
 #   Function Name: index
@@ -137,3 +142,37 @@ def DownloadResults(request, s_ResultsFile):
             response['Content-Disposition'] = 'inline; filename=' + os.path.basename(filePath)
             return response
     raise Http404
+
+#################################
+#   Function Name: GeneratePlot
+#   Function Author: Rohit
+#   Function Description: Creates plot from csv dataS
+#   Inputs: request | Outputs: plot
+#################################
+def GeneratePlot(request, s_ResultsFile):
+    s_XValuesLabel = request.POST.get('s_XValuesLabel')
+    s_YValuesLabel = request.POST.get('s_YValuesLabel')
+    s_FilePath = './DataCollection/TestResults/' + s_ResultsFile
+    filePath = os.path.join(settings.MEDIA_ROOT, s_FilePath)
+    if os.path.exists(filePath):
+        X = np.genfromtxt(filePath, delimiter=',', dtype=None, encoding='utf8')
+        a_XValues = []
+        a_YValues = []
+        for i in range(1, len(X)):
+            a_XValues.append(float(X[i, int(s_XValuesLabel)]))
+            a_YValues.append(float(X[i, int(s_YValuesLabel)]))
+        s_Title = f"{X[0, int(s_YValuesLabel)]} as a function of {X[0, int(s_XValuesLabel)]}"
+        plt.cla()
+        plt.plot(a_XValues, a_YValues)
+        plt.title(s_Title)
+        plt.grid()
+        s_FilePath = './DataCollection/TestResults/Figures/Save.png'
+        filePath = os.path.join(settings.MEDIA_ROOT, s_FilePath)
+        plt.savefig(filePath)
+        if os.path.exists(filePath):
+            with open(filePath, 'rb') as fh:
+                response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
+                response['Content-Disposition'] = 'inline; filename=' + os.path.basename(filePath)
+                return response
+
+    return redirect('/DataCollection/Experiments')
