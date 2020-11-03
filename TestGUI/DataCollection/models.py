@@ -33,4 +33,4 @@ class Experiment(models.Model):
     m_TestConfigurations    = models.ForeignKey(TestConfiguration, on_delete=models.CASCADE)
     s_ResultsFile           = models.CharField(max_length=100, default="results.csv")
     def __str__(self):
-        return f"{self.s_ExperimentName}"
+        return f"ID: {self.s_ExperimentId}, ({str(self.d_Date.month)}/{str(self.d_Date.day)}/{str(self.d_Date.year)}) Name: {self.s_ExperimentName}"
