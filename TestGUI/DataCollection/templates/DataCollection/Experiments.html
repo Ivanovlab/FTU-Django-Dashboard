@@ -3,7 +3,7 @@
 {% if l_Experiments %}
 <ul>
   {% for exp in l_Experiments %}
-  <li><a href="#"></a>{{ exp }}</li>
+  <li><a href="{% url 'DataCollection:ExperimentDetail' exp.s_ExperimentId %}">{{ exp }}</a></li>
   {% endfor %}
 </ul>
 {% else %}
@@ -24,6 +24,9 @@
     <option value="{{ tc.id }}">{{tc}}</option>
     {% endfor %}
   </select>
+  <br>
+  <label>Filename for results</label>
+  <input type="text" name="s_ResultsFile" id="s_ResultsFile">
   <br>
   <input type="submit" value="Perform">
 </form>

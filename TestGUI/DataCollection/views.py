@@ -16,7 +16,9 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.utils import timezone
 from .models import TestConfiguration, Experiment
-
+import os
+from django.conf import settings
+from django.http import HttpResponse, Http404
 # Index Functions --------------------------------------------------------------
 #################################
 #   Function Name: index
@@ -102,3 +104,36 @@ def CreateNewExperiment(request):
     exp.save()
     # Redirect
     return redirect('/DataCollection/Experiments')
+
+#################################
+#   Function Name: ExperimentDetail
+#   Function Author: Rohit
+#   Function Description: Renders ExperimentDetail.html
+#   Inputs: request | Outputs: ExperimentDetail.html {ctx}
+#################################
+def ExperimentDetail(request, experiment_id):
+    # Get Experiment by Id
+    experiment = Experiment.objects.get(s_ExperimentId = str(experiment_id))
+    # Get Experiments test configuration
+    tc = experiment.m_TestConfigurations
+    ctx = {
+        'experiment': experiment,
+        'tc': tc,
+    }
+    return render(request, 'DataCollection/ExperimentDetail.html', ctx)
+
+#################################
+#   Function Name: DownloadResults
+#   Function Author: Rohit
+#   Function Description: Downloads .csv file
+#   Inputs: request | Outputs: .csv file
+#################################
+def DownloadResults(request, s_ResultsFile):
+    s_FilePath = './DataCollection/TestResults/' + s_ResultsFile
+    filePath = os.path.join(settings.MEDIA_ROOT, s_FilePath)
+    if os.path.exists(filePath):
+        with open(filePath, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
+            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(filePath)
+            return response
+    raise Http404
