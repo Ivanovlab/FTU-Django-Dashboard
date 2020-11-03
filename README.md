@@ -1,5 +1,12 @@
 # FTU-Django-Dashboard
-## Version 1
+## Version 2
+### Requirements
+- Interface COM port
+  - By interfacing the COM ports, we are able to communicate to the arduino to transmit/receive test data
+- MQTT Functionality
+  - By implementing MQTT, we are able to communicate wirelessly to the arduino to transmit/receive test data
+- Error case handling
+  - Add error case handling to avoid user errors such as specifying temperature as a non-int value
 ### Features
 - User-defined Test Configurations
   - User can specify ID, Description, Temperature, Voltage, Test Time, Field and Serial Rate as variables for a test configuration
@@ -8,6 +15,7 @@
   - User can define new experiments by user-defined Test Configurations
   - User can download .csv file containing data from previous experiments
   - User can generate over 700 graphs using data from previous experiments, saved as images
+
 
 ## Changelog
 2020-11-03: Version 1.0 Complete
