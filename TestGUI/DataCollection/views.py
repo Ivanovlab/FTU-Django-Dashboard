@@ -105,6 +105,7 @@ def CreateNewExperiment(request):
     exp.d_Date              = timezone.now()
     testConfigId = request.POST.get('m_TestConfigurations')
     exp.m_TestConfigurations= TestConfiguration.objects.get(pk=testConfigId)
+    exp.s_ResultsFile = request.POST.get('s_ResultsFile')
     # save created object
     exp.save()
     # Redirect
