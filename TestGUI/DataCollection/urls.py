@@ -18,11 +18,12 @@ from . import views
 # Definitions --------------------
 app_name = 'DataCollection'
 urlpatterns = [
+    # Index Path
     path('', views.index, name='index'),
-    path('Experiments/', views.Experiments, name="Experiments"),
-    path('CreateNewExperiment/', views.CreateNewExperiment, name="CreateNewExperiment"),
+    # TestConfigurations
     path('CreateNewTestConfiguration/', views.CreateNewTestConfiguration, name="CreateNewTestConfiguration"),
     path('TestConfigurations/', views.TestConfigurations, name="TestConfigurations"),
-    path('ExperimentHistory/',  views.ExperimentHistory, name="ExperimentHistory"),
-    path('ExperimentDetail/<int:experiment_id>/', views.ExperimentDetail, name="ExperimentDetail"),
+    # Experiments
+    path('Experiments/', views.Experiments, name="Experiments"),
+    path('CreateNewExperiment/', views.CreateNewExperiment, name="CreateNewExperiment"),
 ]

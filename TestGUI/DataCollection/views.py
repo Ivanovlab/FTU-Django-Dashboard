@@ -102,19 +102,3 @@ def CreateNewExperiment(request):
     exp.save()
     # Redirect
     return redirect('/DataCollection/Experiments')
-
-
-
-def ExperimentHistory(request):
-    l_RecentExperiments = Experiment.objects.all()
-    context = {
-        'l_RecentExperiments': l_RecentExperiments,
-    }
-    return render(request, 'DataCollection/ExperimentHistory.html', context)
-
-def ExperimentDetail(request, experiment_id):
-    experiment = Experiment.objects.get(pk=experiment_id)
-    context = {
-        'experiment': experiment,
-    }
-    return render(request, 'DataCollection/ExperimentDetail.html', context)
