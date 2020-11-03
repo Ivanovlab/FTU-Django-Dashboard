@@ -1,9 +1,11 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'DataCollection/style.css' %}">
 <h1>Test Configurations</h1>
 <h2>View Existing Configurations</h2>
 {% if l_TestConfigurations %}
 <ul>
   {% for tc in l_TestConfigurations %}
-  <li><a href="#"></a>{{ tc }}</li>
+  <li><a href="{% url 'DataCollection:TestConfiguationDetail' tc.s_TestId %}">{{ tc }}</a></li>
   {% endfor %}
 </ul>
 {% else %}

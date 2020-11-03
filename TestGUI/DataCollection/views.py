@@ -74,6 +74,20 @@ def CreateNewTestConfiguration(request):
     # Redirect
     return redirect('/DataCollection/TestConfigurations')
 
+#################################
+#   Function Name: TestConfigurationDetail
+#   Function Author: Rohit
+#   Function Description: Renders TestConfigurationDetail.html
+#   Inputs: request | Outputs: TestConfigurationDetail.html {ctx}
+#################################
+def TestConfigurationDetail(request, s_TestId):
+    # Get tc by Id
+    tc = TestConfiguration.objects.get(s_TestId = s_TestId)
+    ctx = {
+        'tc': tc,
+    }
+    return render(request, 'DataCollection/TestConfigurationDetail.html', ctx)
+
 # ..... Experiments ............................................................
 #################################
 #   Function Name: Experiments
