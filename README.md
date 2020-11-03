@@ -10,6 +10,8 @@
 - More configurable graphs
   - Allow user to change graph type, add legends, etc.
   - Allow user to apply filters directly to collected data from GUI
+  - Allow user to specify a start and end time for plot diagram
+  
 ### Features
 - User-defined Test Configurations
   - User can specify ID, Description, Temperature, Voltage, Test Time, Field and Serial Rate as variables for a test configuration
