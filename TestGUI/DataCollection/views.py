@@ -44,3 +44,13 @@ def CreateNewExperiment(request):
     t.save()
 
     return render(request, 'DataCollection/NewExperiment.html')
+
+def CreateNewTestConfiguration(request):
+    return render(request, 'DataCollection/NewTestConfiguration.html')
+
+def ExperimentHistory(request):
+    l_RecentExperiments = Experiment.objects.all()
+    context = {
+        'l_RecentExperiments': l_RecentExperiments,
+    }
+    return render(request, 'DataCollection/ExperimentHistory.html', context)

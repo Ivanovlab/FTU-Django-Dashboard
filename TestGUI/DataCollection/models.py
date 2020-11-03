@@ -32,4 +32,4 @@ class Experiment(models.Model):
     d_Date                  = models.DateTimeField('Trial Date')
     m_TestConfigurations    = models.ForeignKey(TestConfiguration, on_delete=models.CASCADE)
     def __str__(self):
-        return f"Date: {self.s_ExperimentName}"
+        return f"{self.s_ExperimentName}"

@@ -1,0 +1,10 @@
+{% if l_RecentExperiments %}
+  <h2>Previous Experiments</h2>
+  <ul>
+    {% for exp in l_RecentExperiments %}
+    <li><a href="/DataCollection/{{ exp.s_ExperimentId }}">{{ exp.s_ExperimentName }}</a></li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>No Experiments are available.</p>
+{% endif %}

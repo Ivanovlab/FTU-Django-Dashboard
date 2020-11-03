@@ -21,5 +21,7 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('<int:experiment_id>/', views.ExperimentDetail, name='ExperimentDetail'),
     path('NewExperiment/', views.NewExperiment, name="NewExperiment"),
-    path('CreateNewExperiment/', views.CreateNewExperiment, name="CreateNewExperiment")
+    path('CreateNewExperiment/', views.CreateNewExperiment, name="CreateNewExperiment"),
+    path('CreateNewTestConfiguration/', views.CreateNewTestConfiguration, name="CreateNewTestConfiguration"),
+    path('ExperimentHistory/', views.ExperimentHistory, name="ExperimentHistory")
 ]
