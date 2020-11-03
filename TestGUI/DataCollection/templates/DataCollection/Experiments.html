@@ -1,0 +1,29 @@
+<h1>Experiments</h1>
+<h2>View Previous Experiments</h2>
+{% if l_Experiments %}
+<ul>
+  {% for exp in l_Experiments %}
+  <li><a href="#"></a>{{ exp }}</li>
+  {% endfor %}
+</ul>
+{% else %}
+  <p>No Previous Experiments</p>
+{% endif %}
+<h2>Perform New Experiment</h2>
+<form action="{% url 'DataCollection:CreateNewExperiment' %}" method="post">
+  {% csrf_token %}
+  <label>Experiment Name</label>
+  <input type="text" name="s_ExperimentName" id="s_ExperimentName">
+  <br>
+  <label>Experiment ID</label>
+  <input type="text" name="s_ExperimentId" id="s_ExperimentId">
+  <br>
+  <label>Test Configuration</label>
+  <select name="m_TestConfigurations">
+    {% for tc in l_TestConfigurations %}
+    <option value="{{ tc.id }}">{{tc}}</option>
+    {% endfor %}
+  </select>
+  <br>
+  <input type="submit" value="Perform">
+</form>

@@ -14,6 +14,7 @@
 # Imports ----------------------------------------------------------------------
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.utils import timezone
 from .models import TestConfiguration, Experiment
 
 # Index Functions --------------------------------------------------------------
@@ -31,7 +32,7 @@ def index(request):
 #   Function Name: TestConfigurations
 #   Function Author: Rohit
 #   Function Description: Renders the TestConfigurations page
-#   Inputs: request | Outputs: index.html {ctx}
+#   Inputs: request | Outputs: TestConfigurations.html {ctx}
 #################################
 def TestConfigurations(request):
     l_TestConfigurations = TestConfiguration.objects.all()
@@ -44,7 +45,7 @@ def TestConfigurations(request):
 #   Function Author: Rohit
 #   Function Description: Creates new TestConfiguration and loads
 #                           TestConfigurations page again
-#   Inputs: request | Outputs: index.html {ctx}
+#   Inputs: request | Outputs: TestConfigurations.html {ctx}
 #################################
 def CreateNewTestConfiguration(request):
     # Create our new base TestConfiguration object
@@ -66,11 +67,41 @@ def CreateNewTestConfiguration(request):
     # Redirect
     return redirect('/DataCollection/TestConfigurations')
 
-
-
-
-def NewExperiment(request):
-    return render(request, 'DataCollection/NewExperiment.html')
+# ..... Experiments ............................................................
+#################################
+#   Function Name: Experiments
+#   Function Author: Rohit
+#   Function Description: Renders the Experiments page
+#   Inputs: request | Outputs: Experiments.html {ctx}
+#################################
+def Experiments(request):
+    l_Experiments = Experiment.objects.all()
+    l_TestConfigurations = TestConfiguration.objects.all()
+    context = {
+        'l_Experiments': l_Experiments,
+        'l_TestConfigurations': l_TestConfigurations,
+    }
+    return render(request, 'DataCollection/Experiments.html', context)
+#################################
+#   Function Name: CreateNewExperiment
+#   Function Author: Rohit
+#   Function Description: Creates new Experiment and loads
+#                           Experiments page again
+#   Inputs: request | Outputs: experiments.html {ctx}
+#################################
+def CreateNewExperiment(request):
+    # Create our new base Experiment object
+    exp = Experiment()
+    # The form data is accessed by request.POST.get()
+    exp.s_ExperimentName    = request.POST.get('s_ExperimentName')
+    exp.s_ExperimentId      = request.POST.get('s_ExperimentId')
+    exp.d_Date              = timezone.now()
+    testConfigId = request.POST.get('m_TestConfigurations')
+    exp.m_TestConfigurations= TestConfiguration.objects.get(pk=testConfigId)
+    # save created object
+    exp.save()
+    # Redirect
+    return redirect('/DataCollection/Experiments')
 
 
 
