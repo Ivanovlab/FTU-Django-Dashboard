@@ -7,8 +7,9 @@ echo "#                                                                        #
 echo "#       File History: 2020-11-5: Created by Rohit                        #"
 echo "#                                                                        #"
 echo "##########################################################################"
-python3 -m venv ftu
-cd ftu
+mkdir test
+python3 -m venv test/ftu
+cd test/ftu
 
 # Source venv
 source bin/activate

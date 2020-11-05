@@ -14,13 +14,16 @@ This created a virtual directory in your current location, called `ftu` in your 
 
 Navigate to the `manage.py` file to start the program with the following command:
 
-`$ cd ftu/FTU-Django-Dashboard/TestGUI `
+`$ cd test/ftu/FTU-Django-Dashboard/TestGUI `
 
 Then run the program with the command:
 
 `$ python3 manage.py runserver`
 
 Then navigate to http://127.0.0.1:8000/DataCollection/ in a browser and the app should be up and running
+
+You'll only be able to use the plotting / results features if you specify the 'Filename for results' to `SampleTest.csv` before you create an experiment
+
 ## Version 1
 ### Features
 - User-defined Test Configurations
