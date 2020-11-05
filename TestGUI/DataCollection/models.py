@@ -32,5 +32,6 @@ class Experiment(models.Model):
     d_Date                  = models.DateTimeField('Trial Date')
     m_TestConfigurations    = models.ForeignKey(TestConfiguration, on_delete=models.CASCADE)
     s_ResultsFile           = models.CharField(max_length=100, default="SampleTest.csv")
+    s_EmailAddress          = models.CharField(max_length=100, default='IvanovFTU2020@gmail.com')
     def __str__(self):
         return f"ID: {self.i_ExperimentId}, ({str(self.d_Date.month)}/{str(self.d_Date.day)}/{str(self.d_Date.year)}) Name: {self.s_ExperimentName}"

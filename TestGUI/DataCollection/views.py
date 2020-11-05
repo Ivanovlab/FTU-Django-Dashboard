@@ -1,4 +1,4 @@
-##################################
+###############################################################################
 #   File Name: views.py
 #
 #   File Author: Rohit Singh
@@ -10,50 +10,54 @@
 #   File History:
 #   2020-11-02: Created by Rohit
 #
-##################################
+###############################################################################
 # Imports ----------------------------------------------------------------------
+# Django Libraries
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
 from django.utils import timezone
-from .models import TestConfiguration, Experiment
-import os
 from django.conf import settings
 from django.http import HttpResponse, Http404
+# Local Imports
+from .models import TestConfiguration, Experiment
+# Python Libraries
+import os
 import csv
-import pandas as pd
 import numpy as np
 from matplotlib import pyplot as plt
 from pathlib import Path
+from email.message import EmailMessage
+from dotenv import load_dotenv
+import smtplib
 # Index Functions --------------------------------------------------------------
-#################################
+################################################################################
 #   Function Name: index
 #   Function Author: Rohit
 #   Function Description: Renders the index page
 #   Inputs: request | Outputs: index.html {ctx}
-#################################
+################################################################################
 def index(request):
     return render(request, 'DataCollection/index.html')
 # Sub-Menu Functions -----------------------------------------------------------
 # ..... TestConfigurations .....................................................
-#################################
+################################################################################
 #   Function Name: TestConfigurations
 #   Function Author: Rohit
 #   Function Description: Renders the TestConfigurations page
 #   Inputs: request | Outputs: TestConfigurations.html {ctx}
-#################################
+################################################################################
 def TestConfigurations(request):
     l_TestConfigurations = TestConfiguration.objects.all()
     context = {
         'l_TestConfigurations': l_TestConfigurations,
     }
     return render(request, 'DataCollection/TestConfigurations.html', context)
-#################################
+################################################################################
 #   Function Name: CreateNewTestConfiguration
 #   Function Author: Rohit
 #   Function Description: Creates new TestConfiguration and loads
 #                           TestConfigurations page again
 #   Inputs: request | Outputs: TestConfigurations.html {ctx}
-#################################
+################################################################################
 def CreateNewTestConfiguration(request):
     # Create our new base TestConfiguration object
     t = TestConfiguration()
@@ -74,12 +78,12 @@ def CreateNewTestConfiguration(request):
     # Redirect
     return redirect('/DataCollection/TestConfigurations')
 
-#################################
+################################################################################
 #   Function Name: TestConfigurationDetail
 #   Function Author: Rohit
 #   Function Description: Renders TestConfigurationDetail.html
 #   Inputs: request | Outputs: TestConfigurationDetail.html {ctx}
-#################################
+################################################################################
 def TestConfigurationDetail(request, i_TestId):
     # Get tc by Id
     tc = TestConfiguration.objects.get(i_TestId = i_TestId)
@@ -91,12 +95,12 @@ def TestConfigurationDetail(request, i_TestId):
     return render(request, 'DataCollection/TestConfigurationDetail.html', ctx)
 
 # ..... Experiments ............................................................
-#################################
+################################################################################
 #   Function Name: Experiments
 #   Function Author: Rohit
 #   Function Description: Renders the Experiments page
 #   Inputs: request | Outputs: Experiments.html {ctx}
-#################################
+################################################################################
 def Experiments(request):
     l_Experiments = Experiment.objects.all()
     l_TestConfigurations = TestConfiguration.objects.all()
@@ -105,13 +109,13 @@ def Experiments(request):
         'l_TestConfigurations': l_TestConfigurations,
     }
     return render(request, 'DataCollection/Experiments.html', context)
-#################################
+################################################################################
 #   Function Name: CreateNewExperiment
 #   Function Author: Rohit
 #   Function Description: Creates new Experiment and loads
 #                           Experiments page again
 #   Inputs: request | Outputs: experiments.html {ctx}
-#################################
+################################################################################
 def CreateNewExperiment(request):
     # Create our new base Experiment object
     exp = Experiment()
@@ -122,17 +126,20 @@ def CreateNewExperiment(request):
     testConfigId = request.POST.get('m_TestConfigurations')
     exp.m_TestConfigurations= TestConfiguration.objects.get(pk=testConfigId)
     exp.s_ResultsFile = request.POST.get('s_ResultsFile')
+    exp.s_EmailAddress = request.POST.get('s_EmailAddress')
     # save created object
     exp.save()
+    # Send Email (Feature broken)
+    # sendEmail(exp)
     # Redirect
     return redirect('/DataCollection/Experiments')
 
-#################################
+################################################################################
 #   Function Name: ExperimentDetail
 #   Function Author: Rohit
 #   Function Description: Renders ExperimentDetail.html
 #   Inputs: request | Outputs: ExperimentDetail.html {ctx}
-#################################
+################################################################################
 def ExperimentDetail(request, experiment_id):
     # Get Experiment by Id
     experiment = Experiment.objects.get(i_ExperimentId = int(experiment_id))
@@ -144,12 +151,12 @@ def ExperimentDetail(request, experiment_id):
     }
     return render(request, 'DataCollection/ExperimentDetail.html', ctx)
 
-#################################
+################################################################################
 #   Function Name: DownloadResults
 #   Function Author: Rohit
 #   Function Description: Downloads .csv file
 #   Inputs: request | Outputs: .csv file
-#################################
+################################################################################
 def DownloadResults(request, s_ResultsFile):
     s_FilePath = './DataCollection/TestResults/' + s_ResultsFile
     filePath = os.path.join(settings.MEDIA_ROOT, s_FilePath)
@@ -231,3 +238,47 @@ def GeneratePlot(request, s_ResultsFile):
                 return response
     # Otherwise get redirected
     return redirect('/DataCollection/Experiments')
+###############################################################################
+#   Function Name: SendEmail
+#   Function Author: Rohit
+#   Function Description:   Sends all test info to email
+#
+#   Inputs: Experiment | Output: Email
+#
+#   History:
+#       2020-11-05: Created by Rohit
+################################################################################
+# TODO: Fix this Function
+def sendEmail(experiment):
+    # Get secrets
+    load_dotenv('./DataCollection/.env')
+    s_EmailAddress  = os.getenv("EMAILADDRESS")
+    s_EmailPassword = os.getenv("EMAILPASSWORD")
+    # Create Email message
+    msg = EmailMessage()
+    msg['Subject']  = f'FTU Test Results: {experiment.s_ExperimentName}'
+    msg['From']     = s_EmailAddress
+    msg['To']       = experiment.s_EmailAddress
+    s_FilePath = './DataCollection/TestResults/' + experiment.s_ResultsFile
+    filePath = os.path.join(settings.MEDIA_ROOT, s_FilePath)
+    # Verify the files existence
+    if os.path.exists(filePath):
+        with open(filePath, 'rb') as fh:
+            file = fh.read()
+        #msg.add_attachment(file, maintype='doc', subtype='csv', filename=f"FTUTestResults")
+    # Create Email Body
+    a_EmailBodyArray = []
+    a_EmailBodyArray.append(f"{experiment.s_ExperimentName} was created at {experiment.d_Date}\n")
+    a_EmailBodyArray.append(f"Test was using test configuration '{experiment.m_TestConfigurations.s_TestDesc}'")
+    a_EmailBodyArray.append(f"Desired Temperature: {experiment.m_TestConfigurations.i_DesiredTemp} Centigrade")
+    a_EmailBodyArray.append(f"Desired Voltage: {experiment.m_TestConfigurations.i_DesiredVoltage} Volts")
+    a_EmailBodyArray.append(f"Desired Test Time: {experiment.m_TestConfigurations.i_DesiredTestTime} Seconds")
+    a_EmailBodyArray.append(f"Desired Magnetic Field: {experiment.m_TestConfigurations.i_DesiredField} Milli-Teslas")
+    a_EmailBodyArray.append(f"Desired Serial Rate: {experiment.m_TestConfigurations.i_DesiredSerialRate}")
+    s_EmailBody = "\n".join(a_EmailBodyArray)
+    # Attach email body
+    msg.set_content(s_EmailBody)
+
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+        smtp.login(user=s_EmailAddress, password=s_EmailPassword)
+        smtp.send_message(msg)

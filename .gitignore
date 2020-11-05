@@ -130,3 +130,6 @@ dmypy.json
 
 **/migrations/*
 **/TestResults/Figures/*
+**/Secrets/*
+**/config.py
+*.env
