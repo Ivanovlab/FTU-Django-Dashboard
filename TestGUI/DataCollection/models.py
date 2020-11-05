@@ -19,6 +19,7 @@ from django.conf import settings
 # Python imports
 import numpy as np
 import os
+import json
 
 # Class Definitions-------------------------------------------------------------
 class TestConfiguration(models.Model):
@@ -30,6 +31,38 @@ class TestConfiguration(models.Model):
     i_DesiredField      = models.IntegerField(default=0)
     i_DesiredSerialRate = models.IntegerField(default=0)
     ############################################################################
+    #   Function Name: GetJSONInstructions
+    #   Function Description: Returns the JSON object to be sent to board
+    #   Inputs: (self) | Output: JSON instructions to be sent
+    #   Function History:
+    #       2020-11-05: Created by Rohit
+    ############################################################################
+    def GetJSONInstructions(self):
+        test_values = {
+            'temperature': self.i_DesiredTemp,
+            'v_stress': self.i_DesiredVoltage,
+            'test_time': self.i_DesiredTestTime,
+            'magnetic_field': self.i_DesiredField,
+            'Test_start': 1,
+            'Test_stop': 0,
+            'serial_rate': 200
+            }
+        measurement_params = {
+            'temperature': {"unit": "C"},
+            'v_stress': {'unit': 'mV'},
+            'test_time': {'unit': 'seconds'},
+            'magnetic_field': {'unit': "mT"},
+            'serial_rate': {'unit':'milliseconds'}
+            }
+        instructions = {
+            'id': self.i_TestId,
+            'description': self.s_TestDesc,
+            'test_values': test_values,
+            'measurement_params': measurement_params,
+            }
+        js_instructions = json.dumps(instructions)
+        return js_instructions
+    ############################################################################
     #   Function Name: ___str___
     #   Function Description: Returns the objects identity string
     #   Inputs: (self) | Output: "ID: 0, Description: Vibe Check"
@@ -38,6 +71,7 @@ class TestConfiguration(models.Model):
     ############################################################################
     def __str__(self):
         return f"ID: {self.i_TestId}, Description: {self.s_TestDesc}"
+
 
 class Experiment(models.Model):
     s_ExperimentName        = models.CharField(max_length=200, default="Default Experiment")
@@ -67,7 +101,6 @@ class Result(models.Model):
     ############################################################################
     def LoadResultsFilepath(self):
         s_FilePath = os.path.join(settings.MEDIA_ROOT, './DataCollection/TestResults/' + self.s_FileName)
-        print(f"TEST: File Path Exists: {s_FilePath}")
         if os.path.exists(s_FilePath):
             return s_FilePath
         else:
