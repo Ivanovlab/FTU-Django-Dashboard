@@ -2,7 +2,7 @@
 <link rel="stylesheet" type="text/css" href="{% static 'DataCollection/style.css' %}">
 <h1>{{ tc }}</h1>
 <h2>Test Configuration</h2>
-<p>Test ID: {{tc.s_TestId}}</p>
+<p>Test ID: {{tc.i_TestId}}</p>
 <p>Test Description: {{tc.s_TestDesc}}</p>
 <p>Desired Temperature: {{tc.i_DesiredTemp}} (Centigrade)</p>
 <p>Desired Voltage: {{tc.i_DesiredVoltage}} (Volts)</p>
@@ -12,7 +12,7 @@
 <h3>Experiments which use this configuration:</h3>
 <ul>
 {% for exp in l_experiments %}
-  <li><a href="{% url 'DataCollection:ExperimentDetail' exp.s_ExperimentId %}">{{ exp }}</a></li>
+  <li><a href="{% url 'DataCollection:ExperimentDetail' exp.i_ExperimentId %}">{{ exp }}</a></li>
 {% endfor %}
 </ul>
 <p><a href="{% url 'DataCollection:index' %}">Go Back to Index Page</a></p>

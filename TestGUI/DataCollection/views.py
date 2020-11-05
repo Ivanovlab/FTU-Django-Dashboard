@@ -58,7 +58,7 @@ def CreateNewTestConfiguration(request):
     # Create our new base TestConfiguration object
     t = TestConfiguration()
     # The form data is accessed by request.POST.get()
-    t.s_TestId          = request.POST.get('s_TestId')
+    t.i_TestId          = int(request.POST.get('i_TestId'))
     t.s_TestDesc        = request.POST.get('s_TestDesc')
     t.i_DesiredTemp     = int(request.POST.get('i_DesiredTemp'))
     t.i_DesiredVoltage  = int(request.POST.get('i_DesiredVoltage'))
@@ -80,9 +80,9 @@ def CreateNewTestConfiguration(request):
 #   Function Description: Renders TestConfigurationDetail.html
 #   Inputs: request | Outputs: TestConfigurationDetail.html {ctx}
 #################################
-def TestConfigurationDetail(request, s_TestId):
+def TestConfigurationDetail(request, i_TestId):
     # Get tc by Id
-    tc = TestConfiguration.objects.get(s_TestId = s_TestId)
+    tc = TestConfiguration.objects.get(i_TestId = i_TestId)
     l_experiments = tc.experiment_set.all()
     ctx = {
         'tc': tc,
@@ -117,7 +117,7 @@ def CreateNewExperiment(request):
     exp = Experiment()
     # The form data is accessed by request.POST.get()
     exp.s_ExperimentName    = request.POST.get('s_ExperimentName')
-    exp.s_ExperimentId      = request.POST.get('s_ExperimentId')
+    exp.i_ExperimentId      = int(request.POST.get('i_ExperimentId'))
     exp.d_Date              = timezone.now()
     testConfigId = request.POST.get('m_TestConfigurations')
     exp.m_TestConfigurations= TestConfiguration.objects.get(pk=testConfigId)
@@ -135,7 +135,7 @@ def CreateNewExperiment(request):
 #################################
 def ExperimentDetail(request, experiment_id):
     # Get Experiment by Id
-    experiment = Experiment.objects.get(s_ExperimentId = str(experiment_id))
+    experiment = Experiment.objects.get(i_ExperimentId = int(experiment_id))
     # Get Experiments test configuration
     tc = experiment.m_TestConfigurations
     ctx = {
