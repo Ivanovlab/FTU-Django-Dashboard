@@ -119,6 +119,10 @@ def DownloadResults(request, s_ResultsFile):
 # TODO: If the path doesn't exist, give the user an error
 # TODO: Add more error case handling
 def GeneratePlot(request, s_ResultsFile):
+    # Load results object
+    m_Result = Result.objects.get(s_FileName=s_ResultsFile)
+    # load results as matrix
+    M_data = m_Result.LoadResultsAsMatrix()
     # Retrieve Data from the form
     s_XValuesLabel  = request.POST.get('s_XValuesLabel')
     s_YValuesLabel  = request.POST.get('s_YValuesLabel')
@@ -129,49 +133,40 @@ def GeneratePlot(request, s_ResultsFile):
     if b_spliceData:
         i_StartTimeIdx  = -1
         i_EndTimeIdx    = -1
-    # Create file path
-    s_FilePath = './DataCollection/TestResults/' + s_ResultsFile
+    # Create arrays to store data in
+    a_XValues = m_Result.LoadArrayByIndex(self, index=int(s_XValuesLabel))
+    a_YValues = m_Result.LoadArrayByIndex(self, index=int(s_YValuesLabel))
+    # Fill the arrays by iterating over the rows
+    for i in range(1, len(M_data)):
+        # If user wants to splice their data, find the bounds
+        if b_spliceData:
+            # Find index for start / end times
+            if float(M_data[i, 1]) > float(i_StartTime) and i_StartTimeIdx == -1:
+                i_StartTimeIdx = i
+            if float(M_data[i, 1]) > float(i_EndTime) and i_EndTimeIdx == -1:
+                i_EndTimeIdx = i
+    # Clear any previously saved plot info
+    plt.cla()
+    # If the user doesn't want their data spliced, don't!
+    if b_spliceData == False:
+        plt.plot(a_XValues, a_YValues)
+    # Else if the user does want their data spliced, do it!
+    else:
+        plt.plot(a_XValues[i_StartTimeIdx:i_EndTimeIdx], a_YValues[i_StartTimeIdx:i_EndTimeIdx])
+    # Decorate our plot
+    plt.title(f"{M_data[0, int(s_YValuesLabel)]} as a function of {M_data[0, int(s_XValuesLabel)]}")
+    plt.xlabel(f"{M_data[0, int(s_XValuesLabel)]}")
+    plt.ylabel(f"{M_data[0, int(s_YValuesLabel)]}")
+    plt.grid()
+    # Save the plot to figures directory and download it from there
+    s_FilePath = './DataCollection/TestResults/Figures/Save.png'
     filePath = os.path.join(settings.MEDIA_ROOT, s_FilePath)
-    # Verify the files existence
+    plt.savefig(filePath)
     if os.path.exists(filePath):
-        # Create a matrix from the .csv file
-        X = np.genfromtxt(filePath, delimiter=',', dtype=None, encoding='utf8')
-        # Create arrays to store data in
-        a_XValues = []
-        a_YValues = []
-        # Fill the arrays by iterating over the rows
-        for i in range(1, len(X)):
-            a_XValues.append(float(X[i, int(s_XValuesLabel)]))
-            a_YValues.append(float(X[i, int(s_YValuesLabel)]))
-            # If user wants to splice their data, find the bounds
-            if b_spliceData:
-                # Find index for start / end times
-                if float(X[i, 1]) > float(i_StartTime) and i_StartTimeIdx == -1:
-                    i_StartTimeIdx = i
-                if float(X[i, 1]) > float(i_EndTime) and i_EndTimeIdx == -1:
-                    i_EndTimeIdx = i
-        # Clear any previously saved plot info
-        plt.cla()
-        # If the user doesn't want their data spliced, don't!
-        if b_spliceData == False:
-            plt.plot(a_XValues, a_YValues)
-        # Else if the user does want their data spliced, do it!
-        else:
-            plt.plot(a_XValues[i_StartTimeIdx:i_EndTimeIdx], a_YValues[i_StartTimeIdx:i_EndTimeIdx])
-        # Decorate our plot
-        plt.title(f"{X[0, int(s_YValuesLabel)]} as a function of {X[0, int(s_XValuesLabel)]}")
-        plt.xlabel(f"{X[0, int(s_XValuesLabel)]}")
-        plt.ylabel(f"{X[0, int(s_YValuesLabel)]}")
-        plt.grid()
-        # Save the plot to figures directory and download it from there
-        s_FilePath = './DataCollection/TestResults/Figures/Save.png'
-        filePath = os.path.join(settings.MEDIA_ROOT, s_FilePath)
-        plt.savefig(filePath)
-        if os.path.exists(filePath):
-            with open(filePath, 'rb') as fh:
-                response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
-                response['Content-Disposition'] = 'inline; filename=' + os.path.basename(filePath)
-                return response
+        with open(filePath, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
+            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(filePath)
+            return response
     # Otherwise get redirected
     return redirect('/DataCollection/Experiments')
 ###############################################################################

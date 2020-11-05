@@ -14,6 +14,7 @@
 # Imports ---------------------------------------------
 from django.db import models
 from django.conf import settings
+import numpy as np
 import os
 
 # Class Definitions
@@ -47,5 +48,14 @@ class Result(models.Model):
             return s_FilePath
         else:
             return -1
+    def LoadResultsAsMatrix(self):
+        s_csvFilePath   = self.LoadResultsFilepath()
+        M_data          = np.genfromtxt(s_csvFilePath, delimiter=',', dtype=None, encoding='utf8')
+        return M_data
+
+    def LoadArrayByIndex(self, index):
+        M_data = self.LoadArrayByIndex()
+        return M_data[:,index]
+
     def __str__(self):
         return f"{self.s_FileName}"
