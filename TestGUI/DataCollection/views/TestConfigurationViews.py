@@ -1,14 +1,15 @@
 ###############################################################################
-#   File Name: views.py
+#   File Name: TestConfigurationViews.py
 #
 #   File Author: Rohit Singh
 #
 #   File Description:
-#     This file routes our views
+#     This file routes our test configuration views
 #     to the backend
 #
 #   File History:
-#   2020-11-02: Created by Rohit
+#   2020-11-05: TestConfigurationViews.py created from old views.py
+#   2020-11-02: (views.py) Created by Rohit
 #
 ###############################################################################
 # Imports ----------------------------------------------------------------------
@@ -16,18 +17,8 @@
 from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.conf import settings
-from django.http import HttpResponse, Http404
 # Local Imports
 from .models import TestConfiguration, Experiment
-# Python Libraries
-import os
-import csv
-import numpy as np
-from matplotlib import pyplot as plt
-from pathlib import Path
-from email.message import EmailMessage
-from dotenv import load_dotenv
-import smtplib
 # ..... TestConfigurations .....................................................
 ################################################################################
 #   Function Name: TestConfigurations

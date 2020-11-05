@@ -1,14 +1,15 @@
 ###############################################################################
-#   File Name: views.py
+#   File Name: ExperimentViews.py
 #
 #   File Author: Rohit Singh
 #
 #   File Description:
-#     This file routes our views
+#     This file routes our experiment views
 #     to the backend
 #
 #   File History:
-#   2020-11-02: Created by Rohit
+#   2020-11-05: ExperimentViews.py created from old views.py
+#   2020-11-02: (views.py) Created by Rohit
 #
 ###############################################################################
 # Imports ----------------------------------------------------------------------
