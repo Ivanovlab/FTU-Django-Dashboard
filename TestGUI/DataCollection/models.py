@@ -13,6 +13,8 @@
 ##################################
 # Imports ---------------------------------------------
 from django.db import models
+from django.conf import settings
+import os
 
 # Class Definitions
 class TestConfiguration(models.Model):
@@ -35,3 +37,15 @@ class Experiment(models.Model):
     s_EmailAddress          = models.CharField(max_length=100, default='IvanovFTU2020@gmail.com')
     def __str__(self):
         return f"ID: {self.i_ExperimentId}, ({str(self.d_Date.month)}/{str(self.d_Date.day)}/{str(self.d_Date.year)}) Name: {self.s_ExperimentName}"
+
+class Result(models.Model):
+    s_FileName              = models.CharField(max_length=200, default="SampleTest.csv")
+    def LoadResultsFilepath(self):
+        s_FilePath = os.path.join(settings.MEDIA_ROOT, './DataCollection/TestResults/' + self.s_FileName)
+        print(f"TEST: File Path Exists: {s_FilePath}")
+        if os.path.exists(s_FilePath):
+            return s_FilePath
+        else:
+            return -1
+    def __str__(self):
+        return f"{self.s_FileName}"

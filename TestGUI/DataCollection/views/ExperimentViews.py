@@ -1,4 +1,4 @@
-###############################################################################
+################################################################################
 #   File Name: ExperimentViews.py
 #
 #   File Author: Rohit Singh
@@ -19,7 +19,7 @@ from django.utils import timezone
 from django.conf import settings
 from django.http import HttpResponse, Http404
 # Local Imports
-from .models import TestConfiguration, Experiment
+from ..models import TestConfiguration, Experiment, Result
 # Python Libraries
 import os
 import csv
@@ -93,14 +93,15 @@ def ExperimentDetail(request, experiment_id):
 #   Inputs: request | Outputs: .csv file
 ################################################################################
 def DownloadResults(request, s_ResultsFile):
-    s_FilePath = './DataCollection/TestResults/' + s_ResultsFile
-    filePath = os.path.join(settings.MEDIA_ROOT, s_FilePath)
-    if os.path.exists(filePath):
-        with open(filePath, 'rb') as fh:
+    m_Result        = Result.objects.get(s_FileName=s_ResultsFile)
+    s_csvFilePath   = m_Result.LoadResultsFilepath()
+    if s_csvFilePath == -1:
+        raise Http404
+    else:
+        with open(s_csvFilePath, 'rb') as fh:
             response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
-            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(filePath)
+            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(s_csvFilePath)
             return response
-    raise Http404
 
 ###############################################################################
 #   Function Name: GeneratePlot

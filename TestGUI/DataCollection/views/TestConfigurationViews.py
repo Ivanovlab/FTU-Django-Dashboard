@@ -18,7 +18,7 @@ from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.conf import settings
 # Local Imports
-from .models import TestConfiguration, Experiment
+from ..models import TestConfiguration, Experiment
 # ..... TestConfigurations .....................................................
 ################################################################################
 #   Function Name: TestConfigurations
