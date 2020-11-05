@@ -10,13 +10,13 @@
 - More configurable graphs
   - Allow user to change graph type, add legends, etc.
   - Allow user to apply filters directly to collected data from GUI
-- Better Organization
-  - Modularize views.py
 
 ### Features
 #### Newly implemented
 - More Configurable Graphs
   - Allow user to specify a start and end time for plot diagram
+- Better Organization
+  - Modularize views.py
 #### From Feature 1
 - User-defined Test Configurations
   - User can specify ID, Description, Temperature, Voltage, Test Time, Field and Serial Rate as variables for a test configuration
