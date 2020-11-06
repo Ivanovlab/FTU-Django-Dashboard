@@ -4,6 +4,7 @@ echo "#       File Name: installer                                             #
 echo "#       File Description: Installs and configures TestGUI                #"
 echo "#                                                                        #"
 echo "#       File History: 2020-11-5: Created by Rohit                        #"
+echo "#                     2020-11-6: Adapted for V2 by Rohit                 #"
 echo "#                                                                        #"
 echo "##########################################################################"
 # ToDo: Check users Python version
@@ -28,11 +29,12 @@ echo "##########      Activated virtual environment 'test/ftu       ############
 
 # Clone repo
 echo "#############   Downloading code from github                 #############"
-git clone https://github.com/RohitKochhar/FTU-Django-Dashboard.git
+git clone --single-branch --branch version2 https://github.com/RohitKochhar/FTU-Django-Dashboard.git
 echo "#############   Code downloaded from github                  #############"
 
 # Enter repo
 cd FTU-Django-Dashboard
+mkdir TestGUI/DataCollection/TestResults/Figures/
 echo "##############  Installing required Python packages          #############"
 pip install -r requirements.txt
 # Enter app
