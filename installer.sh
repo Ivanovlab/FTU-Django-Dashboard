@@ -15,7 +15,7 @@ echo "################   Created directory 'test'   ############################
 
 # Create a virtual environment in here
 echo "#########     Creating virtual environment 'test/ftu'   ##################"
-python3 -m venv test/ftu
+python3 -m venv test/ftu --clear
 echo "#########     Created virtual environment 'test/ftu'    ##################"
 
 # Enter the virtual directory
@@ -56,7 +56,9 @@ echo "##########################################################################
 echo "                   Installation Complete!                                 "
 echo "                                                                          "
 echo "    Now, all you have to do is:                                           "
-echo '      - cd test/ftu/FTU-Django-Dashboard/TestGUI                          '
+echo "      - cd test/ftu                                                       "
+echo "      - source bin/activate                                               "
+echo '      - cd FTU-Django-Dashboard/TestGUI                                   '
 echo "      - python3 manage.py runserver                                       "
 echo "                                                                          "
 echo "##########################################################################"
