@@ -129,5 +129,12 @@ dmypy.json
 .pyre/
 
 **/migrations/*
+<<<<<<< HEAD
 
+=======
+**/TestResults/Figures/*
+**/Secrets/*
+**/config.py
+*.env
+>>>>>>> 999702d3fd9c67150f27a363227cb9e81988fa52
 **/test/*
