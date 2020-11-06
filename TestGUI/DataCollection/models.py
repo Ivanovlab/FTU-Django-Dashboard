@@ -92,6 +92,7 @@ class Experiment(models.Model):
 
 class Result(models.Model):
     s_FileName              = models.CharField(max_length=200, default="SampleTest.csv")
+    i_ColumnIdx             = models.IntegerField(default=0)
     ############################################################################
     #   Function Name: LoadResultsFilepath
     #   Function Description: Returns the associated csv file's path
@@ -117,15 +118,16 @@ class Result(models.Model):
         M_data          = np.genfromtxt(s_csvFilePath, delimiter=',', dtype=None, encoding='utf8')
         return M_data
     ############################################################################
-    #   Function Name: LoadArrayByIndex
+    #   Function Name: GetColumnByIndex
     #   Function Description: Returns the nth column of the matrix
-    #   Inputs: (self), i | all rows of the ith column
+    #                           The nth column is assigned by m_Result.i_ColumnIdx
+    #   Inputs: (self) | all rows of the ith column
     #   Function History:
     #       2020-11-05: Created by Rohit
     ############################################################################
-    def LoadArrayByIndex(self, index):
-        M_data = self.LoadArrayByIndex()
-        return M_data[:,index]
+    def GetColumnByIndex(self):
+        M_data = self.LoadResultsAsMatrix()
+        return M_data[:,self.i_ColumnIdx]
     ############################################################################
     #   Function Name: ___str___
     #   Function Description: Returns the objects identity string

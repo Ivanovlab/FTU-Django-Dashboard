@@ -64,6 +64,10 @@ def CreateNewExperiment(request):
     exp.s_EmailAddress = request.POST.get('s_EmailAddress')
     # save created object
     exp.save()
+    # TODO: Fix this:
+    # Create a new results object
+    m_Result = Result(s_FileName=exp.s_ResultsFile)
+    m_Result.save()
     # Send Email (Feature broken)
     # sendEmail(exp)
     # Redirect
@@ -93,6 +97,7 @@ def ExperimentDetail(request, experiment_id):
 #   Inputs: request | Outputs: .csv file
 ################################################################################
 def DownloadResults(request, s_ResultsFile):
+    print(s_ResultsFile)
     m_Result        = Result.objects.get(s_FileName=s_ResultsFile)
     s_csvFilePath   = m_Result.LoadResultsFilepath()
     if s_csvFilePath == -1:
@@ -134,8 +139,11 @@ def GeneratePlot(request, s_ResultsFile):
         i_StartTimeIdx  = -1
         i_EndTimeIdx    = -1
     # Create arrays to store data in
-    a_XValues = m_Result.LoadArrayByIndex(self, index=int(s_XValuesLabel))
-    a_YValues = m_Result.LoadArrayByIndex(self, index=int(s_YValuesLabel))
+    m_Result.i_ColumnIdx = int(s_XValuesLabel)
+    a_XValues = m_Result.GetColumnByIndex()
+
+    m_Result.i_ColumnIdx = int(s_YValuesLabel)
+    a_YValues = m_Result.GetColumnByIndex()
     # Fill the arrays by iterating over the rows
     for i in range(1, len(M_data)):
         # If user wants to splice their data, find the bounds
