@@ -33,17 +33,11 @@ echo "#############   Code downloaded from github                  #############
 
 # Enter repo
 cd FTU-Django-Dashboard
-
+echo "##############  Installing required Python packages          #############"
+pip install -r requirements.txt
 # Enter app
 cd TestGUI/
-echo "##############  Installing required Python packages          #############"
 
-# Install django
-pip install django
-
-# Import Needed modules
-pip install pandas
-pip install matplotlib
 echo "##############  Python packages installed                    #############"
 
 # Perform migrations
