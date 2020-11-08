@@ -27,8 +27,8 @@ class TestConfiguration(models.Model):
     s_TestDesc          = models.CharField(max_length=200, default="Default Test")
     i_DesiredTemp       = models.IntegerField(default=0)
     i_DesiredVoltage    = models.IntegerField(default=0)
-    i_DesiredTestTime   = models.IntegerField(default=0)
     i_DesiredField      = models.IntegerField(default=0)
+    i_DesiredTestTime   = models.IntegerField(default=0)
     i_DesiredSerialRate = models.IntegerField(default=0)
     ############################################################################
     #   Function Name: GetJSONInstructions
