@@ -11,10 +11,11 @@
 		a) If you get some "/r" errors, cancel the install and delete the created folder, then run `dos2unix installer.sh` and re-run `bash installer.sh`
 	3. If the install works properly, some final instructions will be given after the script runs. Follow these instructions.
 	4. Navigate to http://127.0.0.1:8000/DataCollection/ in a browser and the app should be up and running
-	
+
 ## Development Notes
 
 ### Bugs
+- Plot generation needs to be reverted back to previous version
 - You'll only be able to use the plotting / results features if you specify the 'Filename for results' to `SampleTest.csv` before you create an experiment
 
 ### To-Do's
