@@ -30,6 +30,30 @@ class TestConfiguration(models.Model):
     i_DesiredField      = models.IntegerField(default=0)
     i_DesiredTestTime   = models.IntegerField(default=0)
     i_DesiredSerialRate = models.IntegerField(default=0)
+
+    ############################################################################
+    #   Function Name: save
+    #   Function Description: Checks inputs before saving
+    #   Inputs: (self) | Output: either ValueError or a saved object
+    #   Function History:
+    #       2020-11-08: Created by Rohit
+    ############################################################################
+    def save(self, *args, **kwargs):
+        if self.i_TestId < 0:
+            raise ValueError("Test ID must be a positive integer")
+        if self.i_DesiredTemp < 0 or self.i_DesiredTemp > 125:
+            raise ValueError("Temperature must be between 0 and 125")
+        if abs(self.i_DesiredVoltage) > 50:
+            raise ValueError("Voltage must be between -50 and 50")
+        if self.i_DesiredField < 0 or self.i_DesiredField > 50:
+            raise ValueError("Magnetic Field must be betten 0 and 50")
+        if self.i_DesiredTestTime < 0:
+            raise ValueError("Test time must be a positive integer")
+        if self.i_DesiredSerialRate != 9600:
+            raise ValueError("Serial Rate must be 9600")
+
+        super().save(*args, **kwargs)
+
     ############################################################################
     #   Function Name: GetJSONInstructions
     #   Function Description: Returns the JSON object to be sent to board
