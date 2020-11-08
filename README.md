@@ -1,5 +1,11 @@
-# FTU-Django-Dashboard - v2
+# FTU-Django-Dashboard
+Currently Version 2
+
+## Configuration Instructions
+Configuration instructions are found [here](https://www.youtube.com/watch?v=tXPInUTOc4o&ab_channel=FTUReliability)
+
 ## Installer Instructions
+
 ### Requirements
 - Works best with either: Mac, Linux, Windows (w/ Windows Linux Subsystem enabled)
 - Installer can be a little dicey with windows
@@ -12,28 +18,9 @@
 	3. If the install works properly, some final instructions will be given after the script runs. Follow these instructions.
 	4. Navigate to http://127.0.0.1:8000/DataCollection/ in a browser and the app should be up and running
 	
-## Development Notes
-
-## Development Notes
-
-### Bugs
-- Plot generation needs to be reverted back to previous version
-- You'll only be able to use the plotting / results features if you specify the 'Filename for results' to `SampleTest.csv` before you create an experiment
-
-### To-Do's
-- Fix label generation for plots
-- Finish V2 Documentaiton
-
-### Features (Not updated)
-- User-defined Test Configurations
-  - User can specify ID, Description, Temperature, Voltage, Test Time, Field and Serial Rate as variables for a test configuration
-  - User can create new Test Configurations for experiments, or can re-use pre-existing test configuraitons
-- Experiment History
-  - User can define new experiments by user-defined Test Configurations
-  - User can download .csv file containing data from previous experiments
-  - User can generate over 700 graphs using data from previous experiments, saved as images
-
 ## Changelog
+2020-11-08: Version 2.0 merged as main branch
+
 2020-11-04: Version 2.0 Started
 
 2020-11-03: Version 1.0 Complete
