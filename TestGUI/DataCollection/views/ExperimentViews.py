@@ -138,14 +138,13 @@ def GeneratePlot(request, s_ResultsFile):
     if b_spliceData:
         i_StartTimeIdx  = -1
         i_EndTimeIdx    = -1
-    # Create arrays to store data in
-    m_Result.i_ColumnIdx = int(s_XValuesLabel)
-    a_XValues = m_Result.GetColumnByIndex()
-
-    m_Result.i_ColumnIdx = int(s_YValuesLabel)
-    a_YValues = m_Result.GetColumnByIndex()
+    # Create blank arrays for the data to be plotted
+    a_XValues = []
+    a_YValues = []
     # Fill the arrays by iterating over the rows
     for i in range(1, len(M_data)):
+        a_XValues.append(float(M_data[i, int(s_XValuesLabel)]))
+        a_YValues.append(float(M_data[i, int(s_YValuesLabel)]))
         # If user wants to splice their data, find the bounds
         if b_spliceData:
             # Find index for start / end times
