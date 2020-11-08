@@ -14,7 +14,10 @@
 	
 ## Development Notes
 
+## Development Notes
+
 ### Bugs
+- Plot generation needs to be reverted back to previous version
 - You'll only be able to use the plotting / results features if you specify the 'Filename for results' to `SampleTest.csv` before you create an experiment
 
 ### To-Do's

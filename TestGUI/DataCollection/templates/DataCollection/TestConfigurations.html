@@ -5,7 +5,7 @@
 {% if l_TestConfigurations %}
 <ul>
   {% for tc in l_TestConfigurations %}
-  <li><a href="{% url 'DataCollection:TestConfiguationDetail' tc.s_TestId %}">{{ tc }}</a></li>
+  <li><a href="{% url 'DataCollection:TestConfiguationDetail' tc.i_TestId %}">{{ tc }}</a></li>
   {% endfor %}
 </ul>
 {% else %}
@@ -15,7 +15,7 @@
 <form action="{% url 'DataCollection:CreateNewTestConfiguration' %}" method="post">
   {% csrf_token %}
   <label>Test ID</label>
-  <input type="text" name="s_TestId" id="s_TestIdInput">
+  <input type="number" name="i_TestId" id="i_TestIdInput">
   <br>
   <label>Test Description</label>
   <input type="text" name="s_TestDesc" id="s_TestDescInput">

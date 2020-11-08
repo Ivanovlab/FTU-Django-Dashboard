@@ -5,7 +5,7 @@
 {% if l_Experiments %}
 <ul>
   {% for exp in l_Experiments %}
-  <li><a href="{% url 'DataCollection:ExperimentDetail' exp.s_ExperimentId %}">{{ exp }}</a></li>
+  <li><a href="{% url 'DataCollection:ExperimentDetail' exp.i_ExperimentId %}">{{ exp }}</a></li>
   {% endfor %}
 </ul>
 {% else %}
@@ -18,7 +18,7 @@
   <input type="text" name="s_ExperimentName" id="s_ExperimentName">
   <br>
   <label>Experiment ID</label>
-  <input type="text" name="s_ExperimentId" id="s_ExperimentId">
+  <input type="number" name="i_ExperimentId" id="i_ExperimentId">
   <br>
   <label>Test Configuration</label>
   <select name="m_TestConfigurations">
@@ -29,6 +29,9 @@
   <br>
   <label>Filename for results</label>
   <input type="text" name="s_ResultsFile" id="s_ResultsFile">
+  <br>
+  <label>Email for results</label>
+  <input type="text" name="s_EmailAddress" id="s_EmailAddress">
   <br>
   <input type="submit" value="Perform">
 </form>
