@@ -12,8 +12,9 @@
 ################################################################################
 # Imports ----------------------------------------------------------------------
 from django.test import TestCase
+from django.utils import timezone
 
-from .models import TestConfiguration
+from .models import TestConfiguration, Experiment
 # Test Configuration Tests------------------------------------------------------
 class TestConfigurationModelTests(TestCase):
     def setUp(self):
@@ -122,5 +123,20 @@ class TestConfigurationModelTests(TestCase):
         try:
             tc1.i_TestId = tc0.i_TestId
             tc1.save()
+        except Exception as e:
+            self.assertEqual(type(e), ValueError)
+
+# Experiment Tests--------------------------------------------------------------
+class ExperimentModelTests(TestCase):
+    def setUp(self):
+        tc   =  TestConfiguration.objects.create(i_TestId=0)
+        exp0 =  Experiment.objects.create(i_ExperimentId=0, d_Date = timezone.now(), m_TestConfiguration = tc)
+        exp1 =  Experiment.objects.create(i_ExperimentId=1, d_Date = timezone.now(), m_TestConfiguration = tc)
+    def test_unique_id(self):
+        exp0 =  Experiment.objects.get(i_ExperimentId=0)
+        exp1 =  Experiment.objects.get(i_ExperimentId=1)
+        try:
+            exp1.i_ExperimentId = exp0.i_ExperimentId
+            exp1.save()
         except Exception as e:
             self.assertEqual(type(e), ValueError)

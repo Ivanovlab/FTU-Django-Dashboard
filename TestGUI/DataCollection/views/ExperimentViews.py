@@ -58,16 +58,22 @@ def CreateNewExperiment(request):
     exp.s_ExperimentName    = request.POST.get('s_ExperimentName')
     exp.i_ExperimentId      = int(request.POST.get('i_ExperimentId'))
     exp.d_Date              = timezone.now()
-    testConfigId = request.POST.get('m_TestConfigurations')
-    exp.m_TestConfigurations= TestConfiguration.objects.get(pk=testConfigId)
+    testConfigId = request.POST.get('m_TestConfiguration')
+    exp.m_TestConfiguration= TestConfiguration.objects.get(pk=testConfigId)
     exp.s_ResultsFile = request.POST.get('s_ResultsFile')
     exp.s_EmailAddress = request.POST.get('s_EmailAddress')
     # save created object
     exp.save()
     # TODO: Fix this:
-    # Create a new results object
-    m_Result = Result(s_FileName=exp.s_ResultsFile)
-    m_Result.save()
+    # Create a new results object only if we need to
+    try:
+        b_ResultExistsAlready = True
+        m_result = Result.objects.get(s_FileName=exp.s_ResultsFile)
+    except Exception as e:
+        b_ResultExistsAlready = False
+    if not b_ResultExistsAlready:
+        m_Result = Result(s_FileName=exp.s_ResultsFile)
+        m_Result.save()
     # Send Email (Feature broken)
     # sendEmail(exp)
     # Redirect
@@ -83,7 +89,7 @@ def ExperimentDetail(request, experiment_id):
     # Get Experiment by Id
     experiment = Experiment.objects.get(i_ExperimentId = int(experiment_id))
     # Get Experiments test configuration
-    tc = experiment.m_TestConfigurations
+    tc = experiment.m_TestConfiguration
     ctx = {
         'experiment': experiment,
         'tc': tc,
@@ -207,12 +213,12 @@ def sendEmail(experiment):
     # Create Email Body
     a_EmailBodyArray = []
     a_EmailBodyArray.append(f"{experiment.s_ExperimentName} was created at {experiment.d_Date}\n")
-    a_EmailBodyArray.append(f"Test was using test configuration '{experiment.m_TestConfigurations.s_TestDesc}'")
-    a_EmailBodyArray.append(f"Desired Temperature: {experiment.m_TestConfigurations.i_DesiredTemp} Centigrade")
-    a_EmailBodyArray.append(f"Desired Voltage: {experiment.m_TestConfigurations.i_DesiredVoltage} Volts")
-    a_EmailBodyArray.append(f"Desired Test Time: {experiment.m_TestConfigurations.i_DesiredTestTime} Seconds")
-    a_EmailBodyArray.append(f"Desired Magnetic Field: {experiment.m_TestConfigurations.i_DesiredField} Milli-Teslas")
-    a_EmailBodyArray.append(f"Desired Serial Rate: {experiment.m_TestConfigurations.i_DesiredSerialRate}")
+    a_EmailBodyArray.append(f"Test was using test configuration '{experiment.m_TestConfiguration.s_TestDesc}'")
+    a_EmailBodyArray.append(f"Desired Temperature: {experiment.m_TestConfiguration.i_DesiredTemp} Centigrade")
+    a_EmailBodyArray.append(f"Desired Voltage: {experiment.m_TestConfiguration.i_DesiredVoltage} Volts")
+    a_EmailBodyArray.append(f"Desired Test Time: {experiment.m_TestConfiguration.i_DesiredTestTime} Seconds")
+    a_EmailBodyArray.append(f"Desired Magnetic Field: {experiment.m_TestConfiguration.i_DesiredField} Milli-Teslas")
+    a_EmailBodyArray.append(f"Desired Serial Rate: {experiment.m_TestConfiguration.i_DesiredSerialRate}")
     s_EmailBody = "\n".join(a_EmailBodyArray)
     # Attach email body
     msg.set_content(s_EmailBody)

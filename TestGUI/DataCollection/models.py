@@ -57,6 +57,7 @@ class TestConfiguration(models.Model):
             if type(e) == self.DoesNotExist:
                 # No object was found with this unique
                 b_TestIdIsUnique = True
+
         if b_TestIdIsUnique == False:
             raise ValueError(f"Test ID: {self.i_TestId} is already in use")
 
@@ -125,13 +126,34 @@ class TestConfiguration(models.Model):
 
 
 class Experiment(models.Model):
-    s_ExperimentName        = models.CharField(max_length=200, default="Default Experiment")
     i_ExperimentId          = models.IntegerField(default=0)
+    s_ExperimentName        = models.CharField(max_length=200, default="Default Experiment")
+    i_IterationNo           = models.IntegerField(default=0)
     d_Date                  = models.DateTimeField('Trial Date')
-    m_TestConfigurations    = models.ForeignKey(TestConfiguration, on_delete=models.CASCADE)
+    m_TestConfiguration     = models.ForeignKey(TestConfiguration, on_delete=models.CASCADE)
     s_ResultsFile           = models.CharField(max_length=100, default="SampleTest.csv")
     s_EmailAddress          = models.CharField(max_length=100, default='IvanovFTU2020@gmail.com')
+    ############################################################################
+    #   Function Name: save
+    #   Function Description: Checks inputs before saving
+    #   Inputs: (self) | Output: either ValueError or a saved object
+    #   Function History:
+    #       2020-11-09: Created by Rohit
+    ############################################################################
+    def save(self, *args, **kwargs):
+        # Check i_ExperimentId uniqueness
+        try:
+            b_ExperimentIdIsUnique = False
+            exp = Experiment.objects.get(i_ExperimentId = self.i_ExperimentId)
+        except Exception as e:
+            if type(e) == self.DoesNotExist:
+                # No object was found with this unique
+                b_ExperimentIdIsUnique = True
 
+        if b_ExperimentIdIsUnique == False:
+            raise ValueError(f"Experiment ID: {self.i_ExperimentId} is already in use")
+
+        super().save(*args, **kwargs)
     ############################################################################
     #   Function Name: ___str___
     #   Function Description: Returns the objects identity string
@@ -143,8 +165,23 @@ class Experiment(models.Model):
         return f"ID: {self.i_ExperimentId}, ({str(self.d_Date.month)}/{str(self.d_Date.day)}/{str(self.d_Date.year)}) Name: {self.s_ExperimentName}"
 
 class Result(models.Model):
+    # Pre-defined variables
+    i_ColumnIdx = 0
+    # User defined variables
     s_FileName              = models.CharField(max_length=200, default="SampleTest.csv")
-    i_ColumnIdx             = models.IntegerField(default=0)
+    ############################################################################
+    #   Function Name: save
+    #   Function Description: Checks inputs before saving
+    #   Inputs: (self) | Output: either ValueError or a saved object
+    #   Function History:
+    #       2020-11-08: Created by Rohit
+    ############################################################################
+    def save(self, *args, **kwargs):
+        # Reset the column index whenever we save
+        i_ColumnIdx = 0
+        # TODO: Add a uniqueness check here to ensure you can't create a duplicate
+        #       model (blocked until SampleTest simulations are resolved)
+        super().save(*args, **kwargs)
     ############################################################################
     #   Function Name: LoadResultsFilepath
     #   Function Description: Returns the associated csv file's path

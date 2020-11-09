@@ -21,7 +21,7 @@
   <input type="number" name="i_ExperimentId" id="i_ExperimentId">
   <br>
   <label>Test Configuration</label>
-  <select name="m_TestConfigurations">
+  <select name="m_TestConfiguration">
     {% for tc in l_TestConfigurations %}
     <option value="{{ tc.id }}">{{tc}}</option>
     {% endfor %}
