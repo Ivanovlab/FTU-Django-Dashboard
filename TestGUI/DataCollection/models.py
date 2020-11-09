@@ -23,13 +23,23 @@ import json
 
 # Class Definitions-------------------------------------------------------------
 class TestConfiguration(models.Model):
+    # Constants
+    i_MinimumTemperature    = 0
+    i_MaximumTemperature    = 125
+    i_MinimumVoltage        = -50
+    i_MaximumVoltage        = 50
+    i_MinimumField          = 0
+    i_MaximumField          = 50
+    i_MinimumTestTime       = 0
+    i_MaximumTestTime       = 0
+    # Variables
     i_TestId            = models.IntegerField(default=0)
     s_TestDesc          = models.CharField(max_length=200, default="Default Test")
     i_DesiredTemp       = models.IntegerField(default=0)
     i_DesiredVoltage    = models.IntegerField(default=0)
     i_DesiredField      = models.IntegerField(default=0)
     i_DesiredTestTime   = models.IntegerField(default=0)
-    i_DesiredSerialRate = models.IntegerField(default=0)
+    i_DesiredSerialRate = models.IntegerField(default=9600)
 
     ############################################################################
     #   Function Name: save
@@ -39,16 +49,33 @@ class TestConfiguration(models.Model):
     #       2020-11-08: Created by Rohit
     ############################################################################
     def save(self, *args, **kwargs):
+        # Check i_TestId uniqueness
+        try:
+            b_TestIdIsUnique = False
+            tc = TestConfiguration.objects.get(i_TestId = self.i_TestId)
+        except Exception as e:
+            if type(e) == self.DoesNotExist:
+                # No object was found with this unique
+                b_TestIdIsUnique = True
+        if b_TestIdIsUnique == False:
+            raise ValueError(f"Test ID: {self.i_TestId} is already in use")
+
         if self.i_TestId < 0:
             raise ValueError("Test ID must be a positive integer")
-        if self.i_DesiredTemp < 0 or self.i_DesiredTemp > 125:
-            raise ValueError("Temperature must be between 0 and 125")
-        if abs(self.i_DesiredVoltage) > 50:
-            raise ValueError("Voltage must be between -50 and 50")
-        if self.i_DesiredField < 0 or self.i_DesiredField > 50:
-            raise ValueError("Magnetic Field must be betten 0 and 50")
-        if self.i_DesiredTestTime < 0:
-            raise ValueError("Test time must be a positive integer")
+
+        if self.i_DesiredTemp < self.i_MinimumTemperature or self.i_DesiredTemp > self.i_MaximumTemperature:
+            raise ValueError(f"Temperature must be between {self.i_MinimumTemperature} and {self.i_MaximumTemperature}")
+
+        if self.i_DesiredVoltage < self.i_MinimumVoltage or self.i_DesiredVoltage > self.i_MaximumVoltage:
+            raise ValueError(f"Voltage must be between {self.i_MinimumVoltage} and {self.i_MaximumVoltage}")
+
+        if self.i_DesiredField < self.i_MinimumField or self.i_DesiredField > self.i_MaximumField:
+            raise ValueError(f"Magnetic Field must be betten {self.i_MinimumField} and {self.i_MaximumField}")
+
+        if self.i_DesiredTestTime < self.i_MinimumTestTime or self.i_DesiredTestTime > self.i_MaximumField:
+            raise ValueError(f"Test time must be between {self.i_MinimumTestTime} and {self.i_MaximumTestTime}")
+
+        # TODO: Fix this thang
         if self.i_DesiredSerialRate != 9600:
             raise ValueError("Serial Rate must be 9600")
 
@@ -63,25 +90,25 @@ class TestConfiguration(models.Model):
     ############################################################################
     def GetJSONInstructions(self):
         test_values = {
-            'temperature': self.i_DesiredTemp,
-            'v_stress': self.i_DesiredVoltage,
-            'test_time': self.i_DesiredTestTime,
-            'magnetic_field': self.i_DesiredField,
-            'Test_start': 1,
-            'Test_stop': 0,
-            'serial_rate': 200
+            'temperature':      self.i_DesiredTemp,
+            'v_stress':         self.i_DesiredVoltage,
+            'test_time':        self.i_DesiredTestTime,
+            'magnetic_field':   self.i_DesiredField,
+            'Test_start':       1,
+            'Test_stop':        0,
+            'serial_rate':      self.i_DesiredSerialRate,
             }
         measurement_params = {
-            'temperature': {"unit": "C"},
-            'v_stress': {'unit': 'mV'},
-            'test_time': {'unit': 'seconds'},
-            'magnetic_field': {'unit': "mT"},
-            'serial_rate': {'unit':'milliseconds'}
+            'temperature':      {"unit": "C"},
+            'v_stress':         {'unit': 'mV'},
+            'test_time':        {'unit': 'seconds'},
+            'magnetic_field':   {'unit': "mT"},
+            'serial_rate':      {'unit':'milliseconds'}
             }
         instructions = {
-            'id': self.i_TestId,
-            'description': self.s_TestDesc,
-            'test_values': test_values,
+            'id':               self.i_TestId,
+            'description':      self.s_TestDesc,
+            'test_values':      test_values,
             'measurement_params': measurement_params,
             }
         js_instructions = json.dumps(instructions)
@@ -104,6 +131,7 @@ class Experiment(models.Model):
     m_TestConfigurations    = models.ForeignKey(TestConfiguration, on_delete=models.CASCADE)
     s_ResultsFile           = models.CharField(max_length=100, default="SampleTest.csv")
     s_EmailAddress          = models.CharField(max_length=100, default='IvanovFTU2020@gmail.com')
+
     ############################################################################
     #   Function Name: ___str___
     #   Function Description: Returns the objects identity string
