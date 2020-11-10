@@ -1,5 +1,7 @@
 # FTU-Django-Dashboard - V3
 ## New features
+- User is now notified of errors in human-readable ways and redirected to correct their mistakes
+- Front-end styling added!
 - New tests can easily be defined by adding edge cases into the `DataCollection/tests.py` for each object
 - Automated tests can now be run before launching the server using `python3 manage.py test` which will test that all the cases outlined in `DataCollection/tests.py` are validated
 - Before objects are saved, entries are validated to ensure only valid test configuration inputs are accepted
