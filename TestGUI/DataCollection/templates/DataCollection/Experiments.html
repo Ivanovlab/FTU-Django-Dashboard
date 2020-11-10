@@ -9,7 +9,12 @@
     <link rel="stylesheet" type="text/css" href="{% static 'DataCollection/style.css' %}">
   </head>
   <body>
-    <h1>Experiments</h1>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'DataCollection:index' %}">FTU Data Collection</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Experiments</li>
+      </ol>
+    </nav>
     <h2>View Previous Experiments</h2>
     {% if l_Experiments %}
     <ul>

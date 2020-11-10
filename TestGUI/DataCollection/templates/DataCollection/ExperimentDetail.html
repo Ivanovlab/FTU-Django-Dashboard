@@ -9,7 +9,13 @@
     <link rel="stylesheet" type="text/css" href="{% static 'DataCollection/style.css' %}">
   </head>
   <body>
-    <h1>{{ experiment }}</h1>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'DataCollection:index' %}">FTU Data Collection</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'DataCollection:Experiments' %}">Experiments</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Experiment #{{experiment.i_ExperimentId}}</li>
+      </ol>
+    </nav>
     <h2>Test Configuration</h2>
     <p>Test ID: {{tc.i_TestId}}</p>
     <p>Test Description: {{tc.s_TestDesc}}</p>

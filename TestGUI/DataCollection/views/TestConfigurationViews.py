@@ -27,13 +27,16 @@ from ..models import TestConfiguration, Experiment
 #   Inputs: request | Outputs: TestConfigurations.html {ctx}
 ################################################################################
 def TestConfigurations(request):
+    # Create an empty TestConfiguration object to access constants in HTMl
+    tc = TestConfiguration()
     l_TestConfigurations = TestConfiguration.objects.all()
     s_Error = "None"
     b_Saved = False
     context = {
         'l_TestConfigurations': l_TestConfigurations,
         's_Error': s_Error,
-        'b_Saved': b_Saved
+        'b_Saved': b_Saved,
+        'tc': tc
     }
     return render(request, 'DataCollection/TestConfigurations.html', context)
 ################################################################################
@@ -44,6 +47,8 @@ def TestConfigurations(request):
 #   Inputs: request | Outputs: TestConfigurations.html {ctx}
 ################################################################################
 def CreateNewTestConfiguration(request):
+    # Create an empty TestConfiguration object to access constants in HTML
+    tc = TestConfiguration()
     # Create our new base TestConfiguration object
     t = TestConfiguration()
     # The form data is accessed by request.POST.get()
@@ -67,6 +72,7 @@ def CreateNewTestConfiguration(request):
         'l_TestConfigurations': l_TestConfigurations,
         's_Error'             : s_Error,
         'b_Saved'             : b_Saved,
+        'tc'                  : tc,
     }
     return render(request, 'DataCollection/TestConfigurations.html', context)
 

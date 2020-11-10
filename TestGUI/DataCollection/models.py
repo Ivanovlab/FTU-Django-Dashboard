@@ -31,7 +31,7 @@ class TestConfiguration(models.Model):
     i_MinimumField          = 0
     i_MaximumField          = 50
     i_MinimumTestTime       = 0
-    i_MaximumTestTime       = 0
+    i_MaximumTestTime       = 1000
     # Variables
     i_TestId            = models.IntegerField(default=0)
     s_TestDesc          = models.CharField(max_length=200, default="Default Test")
