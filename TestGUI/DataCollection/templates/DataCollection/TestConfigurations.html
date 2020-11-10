@@ -9,6 +9,16 @@
     <link rel="stylesheet" type="text/css" href="{% static 'DataCollection/style.css' %}">
   </head>
   <body>
+    {% if s_Error != "None" %}
+    <div class="alert alert-danger" role="alert">
+      {{s_Error}}
+    </div>
+    {% endif %}
+    {% if b_Saved %}
+    <div class="alert alert-success" role="alert">
+      Object saved successfully!
+    </div>
+    {% endif %}
     <h1>Test Configurations</h1>
     <h2>View Existing Configurations</h2>
     {% if l_TestConfigurations %}

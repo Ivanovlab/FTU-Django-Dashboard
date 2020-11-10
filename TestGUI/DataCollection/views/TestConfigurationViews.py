@@ -17,7 +17,6 @@
 from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.conf import settings
-from django.contrib import messages
 # Local Imports
 from ..models import TestConfiguration, Experiment
 # ..... TestConfigurations .....................................................
@@ -29,8 +28,12 @@ from ..models import TestConfiguration, Experiment
 ################################################################################
 def TestConfigurations(request):
     l_TestConfigurations = TestConfiguration.objects.all()
+    s_Error = "None"
+    b_Saved = False
     context = {
         'l_TestConfigurations': l_TestConfigurations,
+        's_Error': s_Error,
+        'b_Saved': b_Saved
     }
     return render(request, 'DataCollection/TestConfigurations.html', context)
 ################################################################################
@@ -54,16 +57,18 @@ def CreateNewTestConfiguration(request):
         t.i_DesiredSerialRate = int(request.POST.get('i_DesiredSerialRate'))
         # Save our new form
         t.save()
+        s_Error = "None"
+        b_Saved = True
     except Exception as e:
         s_Error = str(e)
-        messages.error(request, s_Error)
+        b_Saved = False
     l_TestConfigurations = TestConfiguration.objects.all()
     context = {
         'l_TestConfigurations': l_TestConfigurations,
         's_Error'             : s_Error,
+        'b_Saved'             : b_Saved,
     }
-    # Redirect
-    return redirect('/DataCollection/TestConfigurations')
+    return render(request, 'DataCollection/TestConfigurations.html', context)
 
 ################################################################################
 #   Function Name: TestConfigurationDetail
