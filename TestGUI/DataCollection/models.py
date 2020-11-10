@@ -73,7 +73,7 @@ class TestConfiguration(models.Model):
         if self.i_DesiredField < self.i_MinimumField or self.i_DesiredField > self.i_MaximumField:
             raise ValueError(f"Magnetic Field must be betten {self.i_MinimumField} and {self.i_MaximumField}")
 
-        if self.i_DesiredTestTime < self.i_MinimumTestTime or self.i_DesiredTestTime > self.i_MaximumField:
+        if self.i_DesiredTestTime < self.i_MinimumTestTime or self.i_DesiredTestTime > self.i_MaximumTestTime:
             raise ValueError(f"Test time must be between {self.i_MinimumTestTime} and {self.i_MaximumTestTime}")
 
         # TODO: Fix this thang
