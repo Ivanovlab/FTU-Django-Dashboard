@@ -17,6 +17,7 @@
 from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.conf import settings
+from django.contrib import messages
 # Local Imports
 from ..models import TestConfiguration, Experiment
 # ..... TestConfigurations .....................................................
@@ -43,18 +44,23 @@ def CreateNewTestConfiguration(request):
     # Create our new base TestConfiguration object
     t = TestConfiguration()
     # The form data is accessed by request.POST.get()
-    t.i_TestId          = int(request.POST.get('i_TestId'))
-    t.s_TestDesc        = request.POST.get('s_TestDesc')
-    t.i_DesiredTemp     = int(request.POST.get('i_DesiredTemp'))
-    t.i_DesiredVoltage  = int(request.POST.get('i_DesiredVoltage'))
-    t.i_DesiredTestTime = int(request.POST.get('i_DesiredTestTime'))
-    t.i_DesiredField    = int(request.POST.get('i_DesiredField'))
-    t.i_DesiredSerialRate = int(request.POST.get('i_DesiredSerialRate'))
-    # Save our new form
-    t.save()
+    try:
+        t.i_TestId          = int(request.POST.get('i_TestId'))
+        t.s_TestDesc        = request.POST.get('s_TestDesc')
+        t.i_DesiredTemp     = int(request.POST.get('i_DesiredTemp'))
+        t.i_DesiredVoltage  = int(request.POST.get('i_DesiredVoltage'))
+        t.i_DesiredTestTime = int(request.POST.get('i_DesiredTestTime'))
+        t.i_DesiredField    = int(request.POST.get('i_DesiredField'))
+        t.i_DesiredSerialRate = int(request.POST.get('i_DesiredSerialRate'))
+        # Save our new form
+        t.save()
+    except Exception as e:
+        s_Error = str(e)
+        messages.error(request, s_Error)
     l_TestConfigurations = TestConfiguration.objects.all()
     context = {
         'l_TestConfigurations': l_TestConfigurations,
+        's_Error'             : s_Error,
     }
     # Redirect
     return redirect('/DataCollection/TestConfigurations')
