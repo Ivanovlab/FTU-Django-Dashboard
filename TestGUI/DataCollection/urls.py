@@ -23,7 +23,7 @@ urlpatterns = [
     # TestConfigurations
     path('CreateNewTestConfiguration/', views.CreateNewTestConfiguration, name="CreateNewTestConfiguration"),
     path('TestConfigurations/', views.TestConfigurations, name="TestConfigurations"),
-    path('TestConfiguationDetail/<int:i_TestId>', views.TestConfigurationDetail, name="TestConfiguationDetail"),
+    path('TestConfigurationDetail/<int:i_TestId>', views.TestConfigurationDetail, name="TestConfigurationDetail"),
     # Experiments
     path('Experiments/', views.Experiments, name="Experiments"),
     path('CreateNewExperiment/', views.CreateNewExperiment, name="CreateNewExperiment"),
