@@ -180,7 +180,7 @@ def GeneratePlot(request, s_ResultsFile):
             response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
             response['Content-Disposition'] = 'inline; filename=' + os.path.basename(filePath)
             return response
-    # Otherwise get redirected
+    # TODO: Error handling here
     return redirect('/DataCollection/Experiments')
 ###############################################################################
 #   Function Name: SendEmail
@@ -226,3 +226,40 @@ def sendEmail(experiment):
     with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
         smtp.login(user=s_EmailAddress, password=s_EmailPassword)
         smtp.send_message(msg)
+
+###############################################################################
+#   Function Name: GenerateLineGraph
+#   Function Author: Rohit
+#   Function Description:   Creates line graph
+#
+#   Inputs: Request | Output: graph
+#
+#   History:
+#       2020-11-10: Created by Rohit
+################################################################################
+def GenerateLineGraph(request, i_ExperimentId):
+    m_Experiment = Experiment.objects.get(i_ExperimentId = i_ExperimentId)
+    m_TestConfiguration = m_Experiment.m_TestConfiguration
+    m_Result = Result.objects.get(s_FileName = m_Experiment.s_ResultsFile)
+    # Get X values
+    m_Result.i_ColumnIdx   = int(request.POST.get('s_XValuesLabel'))
+    a_XValues = m_Result.GetColumnByIndex()[1:]
+    # Get Y values
+    m_Result.i_ColumnIdx   = int(request.POST.get('s_YValuesLabel'))
+    a_YValues = m_Result.GetColumnByIndex()[1:]
+
+    data = []
+    for idx in range(0, len(a_YValues)):
+        datapoint = []
+        datapoint.append(a_XValues[idx])
+        datapoint.append(a_YValues[idx])
+        data.append(datapoint)
+
+
+    ctx = {
+        'experiment': m_Experiment,
+        'tc': m_TestConfiguration,
+        'data': data,
+    }
+
+    return render(request, 'DataCollection/ExperimentDetail.html', ctx)

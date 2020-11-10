@@ -28,3 +28,13 @@ label {
 .tc-form-container {
 
 }
+
+.experiment-detail-left-pane {
+    width: 33%;
+    float: left;
+}
+
+.experiment-detail-right-pane {
+  width: 66%;
+  float: right;
+}
