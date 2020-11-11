@@ -166,7 +166,7 @@ class Experiment(models.Model):
 
 class Result(models.Model):
     # Pre-defined variables
-    i_ColumnIdx = 0
+    i_ColumnIdx     = 0
     # User defined variables
     s_FileName              = models.CharField(max_length=200, default="SampleTest.csv")
     ############################################################################
@@ -217,6 +217,7 @@ class Result(models.Model):
     def GetColumnByIndex(self):
         M_data = self.LoadResultsAsMatrix()
         return M_data[:,self.i_ColumnIdx]
+
     ############################################################################
     #   Function Name: ___str___
     #   Function Description: Returns the objects identity string

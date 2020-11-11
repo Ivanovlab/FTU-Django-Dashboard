@@ -85,15 +85,32 @@ def CreateNewExperiment(request):
 #   Function Description: Renders ExperimentDetail.html
 #   Inputs: request | Outputs: ExperimentDetail.html {ctx}
 ################################################################################
-def ExperimentDetail(request, experiment_id):
-    # Get Experiment by Id
-    experiment = Experiment.objects.get(i_ExperimentId = int(experiment_id))
-    # Get Experiments test configuration
-    tc = experiment.m_TestConfiguration
+def ExperimentDetail(request, i_ExperimentId):
+    # First, get the results of the experiment we are looking at
+    m_Experiment = Experiment.objects.get(i_ExperimentId = i_ExperimentId)
+    m_TestConfiguration = m_Experiment.m_TestConfiguration
+    m_Result = Result.objects.get(s_FileName = m_Experiment.s_ResultsFile)
+
+    # Next, send the results file to the javascript to be handled
+    M_data  = m_Result.LoadResultsAsMatrix()
+    i_NumCols = np.shape(M_data)[1]
+
+    # Due to memory constraints, only define 5 columns to send
+    columnIndices   = [1,2,7,8,9]
+    labels          = []
+    datas           = []
+    for idx in columnIndices:
+        m_Result.i_ColumnIdx = idx
+        labels.append(m_Result.GetColumnByIndex()[0])
+        datas.append(m_Result.GetColumnByIndex().tolist()[2:])
+
     ctx = {
-        'experiment': experiment,
-        'tc': tc,
+        'experiment': m_Experiment,
+        'tc': m_TestConfiguration,
+        'data': datas,
+        'labels': labels
     }
+
     return render(request, 'DataCollection/ExperimentDetail.html', ctx)
 
 ################################################################################
@@ -238,28 +255,29 @@ def sendEmail(experiment):
 #       2020-11-10: Created by Rohit
 ################################################################################
 def GenerateLineGraph(request, i_ExperimentId):
+    # First, get the results of the experiment we are looking at
     m_Experiment = Experiment.objects.get(i_ExperimentId = i_ExperimentId)
     m_TestConfiguration = m_Experiment.m_TestConfiguration
     m_Result = Result.objects.get(s_FileName = m_Experiment.s_ResultsFile)
-    # Get X values
-    m_Result.i_ColumnIdx   = int(request.POST.get('s_XValuesLabel'))
-    a_XValues = m_Result.GetColumnByIndex()[1:]
-    # Get Y values
-    m_Result.i_ColumnIdx   = int(request.POST.get('s_YValuesLabel'))
-    a_YValues = m_Result.GetColumnByIndex()[1:]
 
-    data = []
-    for idx in range(0, len(a_YValues)):
-        datapoint = []
-        datapoint.append(a_XValues[idx])
-        datapoint.append(a_YValues[idx])
-        data.append(datapoint)
+    # Next, send the results file to the javascript to be handled
+    M_data  = m_Result.LoadResultsAsMatrix()
+    i_NumCols = np.shape(M_data)[1]
 
+    # Due to memory constraints, only define 5 columns to send
+    columnIndices   = [1,2,7,8,9]
+    labels          = []
+    datas           = []
+    for idx in columnIndices:
+        m_Result.i_ColumnIdx = idx
+        labels.append(m_Result.GetColumnByIndex()[0])
+        datas.append(m_Result.GetColumnByIndex().tolist()[2:])
 
     ctx = {
         'experiment': m_Experiment,
         'tc': m_TestConfiguration,
-        'data': data,
+        'data': datas,
+        'labels': labels
     }
 
     return render(request, 'DataCollection/ExperimentDetail.html', ctx)

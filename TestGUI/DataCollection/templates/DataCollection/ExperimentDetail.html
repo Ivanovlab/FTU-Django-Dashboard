@@ -122,89 +122,7 @@
     </form>
   </div>
   <div class='experiment-detail-right-pane'>
-    <form action="{% url 'DataCollection:GenerateLineGraph' experiment.i_ExperimentId %}" method="post">
-      {% csrf_token %}
-      <label>X-Axis Values</label>
-      <select name="s_XValuesLabel">
-        <option value="1">Time</option>
-        <option value="2">Temperature</option>
-        <option value="3">Magnetic Field</option>
-        <option value="4">Test Stop</option>
-        <option value="5">Test Error</option>
-        <option value="6">Error Message</option>
-        <option value="7">DIFF0</option>
-        <option value="8">PWM Duty</option>
-        <option value="9">PWM Average</option>
-        <option value="10">DIFF3</option>
-        <option value="11">DIFF4</option>
-        <option value="12">DIFF5</option>
-        <option value="13">DIFF6</option>
-        <option value="14">DIFF7</option>
-        <option value="15">AIN0</option>
-        <option value="16">AIN1</option>
-        <option value="17">AIN2</option>
-        <option value="18">AIN3</option>
-        <option value="15">AIN4</option>
-        <option value="16">AIN5</option>
-        <option value="17">AIN6</option>
-        <option value="18">AIN7</option>
-        <option value="15">AIN8</option>
-        <option value="16">AIN9</option>
-        <option value="17">AIN10</option>
-        <option value="18">AIN11</option>
-        <option value="19">AIN12</option>
-        <option value="20">AIN13</option>
-        <option value="21">AIN14</option>
-        <option value="22">AIN15</option>
-        <option value="23">OFFSET</option>
-        <option value="24">VCC</option>
-        <option value="25">TEMP</option>
-        <option value="26">GAIN</option>
-        <option value="27">REF</option>
-      </select>
-      <label>Y-Axis Values</label>
-      <select name="s_YValuesLabel">
-        <option value="1">Time</option>
-        <option value="2">Temperature</option>
-        <option value="3">Magnetic Field</option>
-        <option value="4">Test Stop</option>
-        <option value="5">Test Error</option>
-        <option value="6">Error Message</option>
-        <option value="7">DIFF0</option>
-        <option value="8">PWM Duty</option>
-        <option value="9">PWM Average</option>
-        <option value="10">DIFF3</option>
-        <option value="11">DIFF4</option>
-        <option value="12">DIFF5</option>
-        <option value="13">DIFF6</option>
-        <option value="14">DIFF7</option>
-        <option value="15">AIN0</option>
-        <option value="16">AIN1</option>
-        <option value="17">AIN2</option>
-        <option value="18">AIN3</option>
-        <option value="15">AIN4</option>
-        <option value="16">AIN5</option>
-        <option value="17">AIN6</option>
-        <option value="18">AIN7</option>
-        <option value="15">AIN8</option>
-        <option value="16">AIN9</option>
-        <option value="17">AIN10</option>
-        <option value="18">AIN11</option>
-        <option value="19">AIN12</option>
-        <option value="20">AIN13</option>
-        <option value="21">AIN14</option>
-        <option value="22">AIN15</option>
-        <option value="23">OFFSET</option>
-        <option value="24">VCC</option>
-        <option value="25">TEMP</option>
-        <option value="26">GAIN</option>
-        <option value="27">REF</option>
-      </select>
-      <label>Measurement Start Time (Optional)</label>
-      <input type="number" name="i_StartTime"></input>
-      <label>Measurement End Time (Optional)</label>
-      <input type="number" name="i_EndTime"></input>
-      <input type="submit" value="Generate">
+    <h2>Data Viewer</h2>
       {% if data %}
       <div id="container" style="width: 75%;">
         <canvas id="chart"></canvas>
@@ -218,19 +136,24 @@
   <script>
   var ctx = document.getElementById('chart').getContext('2d');
   var data = {{data|safe}}
+  var labels = {{labels|safe}}
+  var colors = ['red','green','blue','yellow','orange']
   var datapoints = [];
   var i;
   for (i = 0; i < data.length; i++){
-    var datapoint = {x: data[i][0], y:data[i][1]}
-    datapoints.push(datapoint)
+    tableColumn = []
+    for (j = 0; j < data[i].length; j++){
+      var datapoint = {x: data[0][j], y:data[i][j]}
+      tableColumn.push(datapoint)
+    }
+    datapoints.push({label:labels[i], data:tableColumn, backgroundColor: colors[i]})
   }
+
   var scatterChart = new Chart(ctx, {
       type: 'scatter',
       data: {
-          datasets: [{
-              label: 'Scatter Dataset',
-              data: datapoints,
-          }]
+          labels: {{labels|safe}},
+          datasets: datapoints
       },
       options: {
           scales: {

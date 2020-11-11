@@ -27,7 +27,7 @@ urlpatterns = [
     # Experiments
     path('Experiments/', views.Experiments, name="Experiments"),
     path('CreateNewExperiment/', views.CreateNewExperiment, name="CreateNewExperiment"),
-    path('ExperimentDetail/<int:experiment_id>', views.ExperimentDetail, name="ExperimentDetail"),
+    path('ExperimentDetail/<int:i_ExperimentId>', views.ExperimentDetail, name="ExperimentDetail"),
     path('DownloadResults/<str:s_ResultsFile>', views.DownloadResults, name="DownloadResults"),
     path('GeneratePlot/<str:s_ResultsFile>', views.GeneratePlot, name="GeneratePlot"),
     # Results
