@@ -1,5 +1,7 @@
 # FTU-Django-Dashboard - V3
 ## New features
+- User can now send JSON instructions of test configuration easily
+- Charts are now rendered in the GUI, while still allowing users to download more specific ones
 - User is now notified of errors in human-readable ways and redirected to correct their mistakes
 - Front-end styling added!
 - New tests can easily be defined by adding edge cases into the `DataCollection/tests.py` for each object
