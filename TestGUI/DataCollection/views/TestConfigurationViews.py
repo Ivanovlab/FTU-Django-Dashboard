@@ -91,3 +91,17 @@ def TestConfigurationDetail(request, i_TestId):
         'l_experiments': l_experiments,
     }
     return render(request, 'DataCollection/TestConfigurationDetail.html', ctx)
+
+def SendSerialData(request, i_TestId):
+    # Get TC by id
+    tc = TestConfiguration.objects.get(i_TestId = i_TestId)
+    # Get the JSON instruction string
+    tc.SendJsonInstructions()
+
+
+    l_experiments = tc.experiment_set.all()
+    ctx = {
+        'tc': tc,
+        'l_experiments': l_experiments,
+    }
+    return render(request, 'DataCollection/TestConfigurationDetail.html', ctx)

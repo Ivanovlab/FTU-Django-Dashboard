@@ -24,6 +24,7 @@ urlpatterns = [
     path('CreateNewTestConfiguration/', views.CreateNewTestConfiguration, name="CreateNewTestConfiguration"),
     path('TestConfigurations/', views.TestConfigurations, name="TestConfigurations"),
     path('TestConfigurationDetail/<int:i_TestId>', views.TestConfigurationDetail, name="TestConfigurationDetail"),
+    path('SendSerialData/<int:i_TestId>', views.SendSerialData, name="SendSerialData"),
     # Experiments
     path('Experiments/', views.Experiments, name="Experiments"),
     path('CreateNewExperiment/', views.CreateNewExperiment, name="CreateNewExperiment"),

@@ -20,6 +20,7 @@ from django.conf import settings
 import numpy as np
 import os
 import json
+import paho.mqtt.client as mqtt
 
 # Class Definitions-------------------------------------------------------------
 class TestConfiguration(models.Model):
@@ -114,6 +115,27 @@ class TestConfiguration(models.Model):
             }
         js_instructions = json.dumps(instructions)
         return js_instructions
+
+    ############################################################################
+    #   Function Name: SendJsonInstructions
+    #   Function Description: Sends the MQTT packet to broker
+    #   Inputs: (self) | Output: Sent object
+    #   Function History:
+    #       2020-11-12: Created by Rohit
+    ############################################################################
+    def SendJsonInstructions(self):
+        s_Inst = self.GetJSONInstructions()
+
+        client = mqtt.Client()
+
+        client.connect("35.173.190.207", 1883, 60)
+
+        client.publish("test", payload=s_Inst, qos=0, retain = False)
+
+        del client
+
+        return
+
     ############################################################################
     #   Function Name: ___str___
     #   Function Description: Returns the objects identity string
