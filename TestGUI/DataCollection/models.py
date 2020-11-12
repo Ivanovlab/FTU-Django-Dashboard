@@ -124,14 +124,16 @@ class TestConfiguration(models.Model):
     #       2020-11-12: Created by Rohit
     ############################################################################
     def SendJsonInstructions(self):
+        # Use Built-in method to retreive JSON instructions
         s_Inst = self.GetJSONInstructions()
-
+        # Create MQTT client
         client = mqtt.Client()
-
+        # Connect to the wireless broker
         client.connect("35.173.190.207", 1883, 60)
-
-        client.publish("test", payload=s_Inst, qos=0, retain = False)
-
+        # Publish the message to topic
+        s_Topic = "test"
+        client.publish(s_Topic, payload=s_Inst, qos=0, retain = False)
+        # Save some memory by deleting the client
         del client
 
         return
@@ -174,6 +176,9 @@ class Experiment(models.Model):
 
         if b_ExperimentIdIsUnique == False:
             raise ValueError(f"Experiment ID: {self.i_ExperimentId} is already in use")
+
+        if self.i_ExperimentId < 0:
+            raise ValueError(f"Experiment ID: {self.i_ExperimentId} is invalid. (ID must be a positive integer)")
 
         super().save(*args, **kwargs)
     ############################################################################

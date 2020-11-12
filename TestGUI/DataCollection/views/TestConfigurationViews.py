@@ -66,8 +66,11 @@ def CreateNewTestConfiguration(request):
         b_Saved = True
     except Exception as e:
         s_Error = str(e)
+        if s_Error == "invalid literal for int() with base 10: ''":
+            s_Error = "Please enter a value for all fields"
         b_Saved = False
     l_TestConfigurations = TestConfiguration.objects.all()
+
     context = {
         'l_TestConfigurations': l_TestConfigurations,
         's_Error'             : s_Error,
@@ -92,13 +95,17 @@ def TestConfigurationDetail(request, i_TestId):
     }
     return render(request, 'DataCollection/TestConfigurationDetail.html', ctx)
 
+################################################################################
+#   Function Name: SendSerialData
+#   Function Author: Rohit
+#   Function Description: Sends serial data
+#   Inputs: request | Outputs: TestConfigurationDetail.html {ctx}
+################################################################################
 def SendSerialData(request, i_TestId):
     # Get TC by id
     tc = TestConfiguration.objects.get(i_TestId = i_TestId)
     # Get the JSON instruction string
     tc.SendJsonInstructions()
-
-
     l_experiments = tc.experiment_set.all()
     ctx = {
         'tc': tc,

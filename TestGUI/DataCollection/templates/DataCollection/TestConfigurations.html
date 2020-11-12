@@ -29,7 +29,7 @@
     {% if l_TestConfigurations %}
     <ul>
       {% for TestConfiguration in l_TestConfigurations %}
-      <li><a href="{% url 'DataCollection:TestConfigurationDetail' tc.i_TestId %}">{{ TestConfiguration }}</a></li>
+      <li><a href="{% url 'DataCollection:TestConfigurationDetail' TestConfiguration.i_TestId %}">{{ TestConfiguration }}</a></li>
       {% endfor %}
     </ul>
     {% else %}
