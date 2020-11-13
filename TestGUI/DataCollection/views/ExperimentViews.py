@@ -285,11 +285,15 @@ def GenerateLineGraph(request, i_ExperimentId):
     columnIndices   = [1,2,7,8,9]
     labels          = []
     datas           = []
+    # Go through the columns and sort them accordingly
     for idx in columnIndices:
         m_Result.i_ColumnIdx = idx
+        # The first element of a column contains it's label
         labels.append(m_Result.GetColumnByIndex()[0])
+        # The remaining elements of a column contain its data
         datas.append(m_Result.GetColumnByIndex().tolist()[2:])
 
+    # Generate some ctx
     ctx = {
         'experiment': m_Experiment,
         'tc': m_TestConfiguration,
