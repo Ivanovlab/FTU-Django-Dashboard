@@ -58,6 +58,15 @@ def CreateNewExperiment(request):
     exp = Experiment()
     # The form data is accessed by request.POST.get()
     try:
+        b_ResultExistsAlready = True
+        m_result = Result.objects.get(s_FileName="SampleTest.csv")
+    except Exception as e:
+        b_ResultExistsAlready = False
+    if not b_ResultExistsAlready:
+        m_Result = Result(s_FileName="SampleTest.csv")
+        m_Result.save()
+    # save created object
+    try:
         exp.s_ExperimentName    = request.POST.get('s_ExperimentName')
         exp.i_ExperimentId      = int(request.POST.get('i_ExperimentId'))
         exp.d_Date              = timezone.now()
@@ -66,14 +75,7 @@ def CreateNewExperiment(request):
         exp.s_ResultsFile = request.POST.get('s_ResultsFile')
         exp.s_EmailAddress = request.POST.get('s_EmailAddress')
         # Check if we need to create a new results object
-        try:
-            b_ResultExistsAlready = True
-            m_result = Result.objects.get(s_FileName=exp.s_ResultsFile)
-        except Exception as e:
-            b_ResultExistsAlready = False
-        if not b_ResultExistsAlready:
-            m_Result = Result(s_FileName=exp.s_ResultsFile)
-        # save created object
+
         exp.save()
         # If we haven't encountered an error, exp is saved
         s_Error = "None"
