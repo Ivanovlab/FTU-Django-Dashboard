@@ -42,6 +42,8 @@ def Experiments(request):
     context = {
         'l_Experiments': l_Experiments,
         'l_TestConfigurations': l_TestConfigurations,
+        's_Error': "None",
+        'b_Saved': False
     }
     return render(request, 'DataCollection/Experiments.html', context)
 ################################################################################
@@ -55,29 +57,44 @@ def CreateNewExperiment(request):
     # Create our new base Experiment object
     exp = Experiment()
     # The form data is accessed by request.POST.get()
-    exp.s_ExperimentName    = request.POST.get('s_ExperimentName')
-    exp.i_ExperimentId      = int(request.POST.get('i_ExperimentId'))
-    exp.d_Date              = timezone.now()
-    testConfigId = request.POST.get('m_TestConfiguration')
-    exp.m_TestConfiguration= TestConfiguration.objects.get(pk=testConfigId)
-    exp.s_ResultsFile = request.POST.get('s_ResultsFile')
-    exp.s_EmailAddress = request.POST.get('s_EmailAddress')
-    # save created object
-    exp.save()
-    # TODO: Fix this:
-    # Create a new results object only if we need to
     try:
-        b_ResultExistsAlready = True
-        m_result = Result.objects.get(s_FileName=exp.s_ResultsFile)
+        exp.s_ExperimentName    = request.POST.get('s_ExperimentName')
+        exp.i_ExperimentId      = int(request.POST.get('i_ExperimentId'))
+        exp.d_Date              = timezone.now()
+        testConfigId = request.POST.get('m_TestConfiguration')
+        exp.m_TestConfiguration= TestConfiguration.objects.get(pk=testConfigId)
+        exp.s_ResultsFile = request.POST.get('s_ResultsFile')
+        exp.s_EmailAddress = request.POST.get('s_EmailAddress')
+        # Check if we need to create a new results object
+        try:
+            b_ResultExistsAlready = True
+            m_result = Result.objects.get(s_FileName=exp.s_ResultsFile)
+        except Exception as e:
+            b_ResultExistsAlready = False
+        if not b_ResultExistsAlready:
+            m_Result = Result(s_FileName=exp.s_ResultsFile)
+        # save created object
+        exp.save()
+        # If we haven't encountered an error, exp is saved
+        s_Error = "None"
+        b_Saved = True
+
     except Exception as e:
-        b_ResultExistsAlready = False
-    if not b_ResultExistsAlready:
-        m_Result = Result(s_FileName=exp.s_ResultsFile)
-        m_Result.save()
-    # Send Email (Feature broken)
-    # sendEmail(exp)
-    # Redirect
-    return redirect('/DataCollection/Experiments')
+        s_Error = str(e)
+        if s_Error == "invalid literal for int() with base 10: ''":
+            s_Error = "Please enter a value for all fields"
+        b_Saved = False
+
+    # Generate some context
+    l_Experiments = Experiment.objects.all()
+    l_TestConfigurations = TestConfiguration.objects.all()
+    context = {
+        'l_Experiments': l_Experiments,
+        'l_TestConfigurations': l_TestConfigurations,
+        's_Error': s_Error,
+        'b_Saved': b_Saved
+    }
+    return render(request, 'DataCollection/Experiments.html', context)
 
 ################################################################################
 #   Function Name: ExperimentDetail

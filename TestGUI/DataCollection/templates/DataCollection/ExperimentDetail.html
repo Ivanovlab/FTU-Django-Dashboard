@@ -1,14 +1,27 @@
+<!--
+  File Name: ExperimentDetail.html
+
+  File Description: HTML page showing a specified experiment along with it's
+                    associated data
+
+  File History: 2020-11-13: Comments / Organization by Rohit
+-->
 <!DOCTYPE html>
 <html>
 <head>
+  <!-- Set the meta tag to enable responsive rendering -->
   <meta charset='utf-8'>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- Set the title of the page -->
   <title>{{experiment}}</title>
+  <!-- Load static resources to access CSS scripts from static/DataCollection/ -->
   {% load static %}
+  <!-- Load the bootstraps resources (must be first to avoid overwriting our css) -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
   <link rel="stylesheet" type="text/css" href="{% static 'DataCollection/style.css' %}">
 </head>
 <body>
+  <!-- Create Navbar -->
   <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a href="{% url 'DataCollection:index' %}">FTU Data Collection</a></li>
@@ -16,8 +29,10 @@
       <li class="breadcrumb-item active" aria-current="page">Experiment #{{experiment.i_ExperimentId}}</li>
     </ol>
   </nav>
+  <!-- Define the left hand plane of the Experiment view -->
   <div class="experiment-detail-left-pane">
     <h2>Experiment Information</h2>
+    <!-- Show the test configuration set up -->
     <p>This experiment uses the test configuration <a href="{% url 'DataCollection:TestConfigurationDetail' tc.i_TestId %}">{{tc.s_TestDesc}}</a></p>
     <p>With this test configuration, the experiment controls are set as follows:</p>
     <ul>
@@ -28,7 +43,9 @@
       <li>Communication Serial Rate: {{tc.i_DesiredSerialRate}}</li>
     </ul>
     <h2>Actions</h2>
+    <!-- Download test results as .csv file -->
     <p><a href="{% url 'DataCollection:DownloadResults' experiment.s_ResultsFile %}">Download Test Results (.csv)</a></p>
+    <!-- Create form so that user input can be parsed to generate plot -->
     <p>Create Plot</p>
     <form action="{% url 'DataCollection:GeneratePlot' experiment.s_ResultsFile %}" method="post">
       {% csrf_token %}
@@ -121,34 +138,51 @@
       <input type="submit" value="Generate">
     </form>
   </div>
+  <!-- Create the right hand plane of the view -->
   <div class='experiment-detail-right-pane'>
     <h2>Data Viewer</h2>
       {% if data %}
+      <!-- Generate a blank canvas first -->
       <div id="container" style="width: 75%;">
         <canvas id="chart"></canvas>
       </div>
       {% endif %}
     </form>
   </div>
+  <!-- Load the chart.js and bootstraps resources -->
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+  <!-- Define a function to change canvas into graph -->
   <script>
+  // Get the canvas element by its id
   var ctx = document.getElementById('chart').getContext('2d');
+  // Load the data from the context (sent by ExperimentViews.py)
   var data = {{data|safe}}
   var labels = {{labels|safe}}
+  // Define the array of colors to display the data with
   var colors = ['red','green','blue','yellow','orange']
+  // Create a blank array to store datapoints
   var datapoints = [];
+  /*
+  chart.js requires data to be of the form [{x: 1, y:2}, {x:2, y:4}] for scatter
+    plot datasets. We create an array of arrays, each containing data sets made
+    of points in this form
+  */
   var i;
+  // Iterate across the columns of the array
   for (i = 1; i < data.length; i++){
     tableColumn = []
+    // Iterate down the rows of the array
     for (j = 0; j < data[i].length; j++){
+      // The X value should always be time, taken from the i=0 array (1st column)
       var datapoint = {x: data[0][j], y:data[i][j]}
       tableColumn.push(datapoint)
     }
     datapoints.push({label:labels[i], data:tableColumn, backgroundColor: colors[i]})
   }
 
+  // Creat and configure the chart element
   var scatterChart = new Chart(ctx, {
       type: 'scatter',
       data: {
@@ -160,7 +194,7 @@
               xAxes: [{
                   type: 'linear',
                   position: 'bottom',
-                  
+
               }]
           }
       }
