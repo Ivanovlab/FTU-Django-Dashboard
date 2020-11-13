@@ -132,11 +132,28 @@ class ExperimentModelTests(TestCase):
         tc   =  TestConfiguration.objects.create(i_TestId=0)
         exp0 =  Experiment.objects.create(i_ExperimentId=0, d_Date = timezone.now(), m_TestConfiguration = tc)
         exp1 =  Experiment.objects.create(i_ExperimentId=1, d_Date = timezone.now(), m_TestConfiguration = tc)
+        ########################################################################
+        #       Test Name:      test_unique_id
+        #       Description:    tests that specified test id is valid
+        #       History:        2020-11-09 - Created by Rohit
+        ########################################################################
     def test_unique_id(self):
         exp0 =  Experiment.objects.get(i_ExperimentId=0)
         exp1 =  Experiment.objects.get(i_ExperimentId=1)
         try:
             exp1.i_ExperimentId = exp0.i_ExperimentId
             exp1.save()
+        except Exception as e:
+            self.assertEqual(type(e), ValueError)
+        ########################################################################
+        #       Test Name:      test_invalid_id
+        #       Description:    tests that specified test id is valid
+        #       History:        2020-11-09 - Created by Rohit
+        ########################################################################
+    def test_invalid_id(self):
+        exp0 = Experiment()
+        try:
+            exp0.i_ExperimentId = -1
+            exp0.save()
         except Exception as e:
             self.assertEqual(type(e), ValueError)
