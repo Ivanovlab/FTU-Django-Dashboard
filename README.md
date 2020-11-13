@@ -1,6 +1,6 @@
 # FTU-Django-Dashboard - V3
 ## New features
-- User can now send JSON instructions of test configuration easily
+- User can now communicate wirelessly with board
 - Charts are now rendered in the GUI, while still allowing users to download more specific ones
 - User is now notified of errors in human-readable ways and redirected to correct their mistakes
 - Front-end styling added!
@@ -28,6 +28,8 @@ Configuration instructions are found [here](https://www.youtube.com/watch?v=tXPI
 	4. Navigate to http://127.0.0.1:8000/DataCollection/ in a browser and the app should be up and running
 
 ## Changelog
+2020-11-13: Version 3.0 merged as main branch
+
 2020-11-08: Version 3.0 Started
 
 2020-11-08: Version 2.0 merged as main branch
