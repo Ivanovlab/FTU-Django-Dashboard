@@ -1,40 +1,100 @@
-{% load static %}
-<link rel="stylesheet" type="text/css" href="{% static 'DataCollection/style.css' %}">
-<h1>Test Configurations</h1>
-<h2>View Existing Configurations</h2>
-{% if l_TestConfigurations %}
-<ul>
-  {% for tc in l_TestConfigurations %}
-  <li><a href="{% url 'DataCollection:TestConfiguationDetail' tc.i_TestId %}">{{ tc }}</a></li>
-  {% endfor %}
-</ul>
-{% else %}
-  <p>No Test Configurations Exist</p>
-{% endif %}
-<h2>Create Test Configuration</h2>
-<form action="{% url 'DataCollection:CreateNewTestConfiguration' %}" method="post">
-  {% csrf_token %}
-  <label>Test ID</label>
-  <input type="number" name="i_TestId" id="i_TestIdInput">
-  <br>
-  <label>Test Description</label>
-  <input type="text" name="s_TestDesc" id="s_TestDescInput">
-  <br>
-  <label>Desired Temperature</label>
-  <input type="number" name="i_DesiredTemp" id="i_DesiredTempInput">
-  <br>
-  <label>Desired Voltage</label>
-  <input type="number" name="i_DesiredVoltage" id="i_DesiredVoltageInput">
-  <br>
-  <label>Desired Test Time</label>
-  <input type="number" name="i_DesiredTestTime" id="i_DesiredTestTimeInput">
-  <br>
-  <label>Desired Field</label>
-  <input type="number" name="i_DesiredField" id="i_DesiredFieldInput">
-  <br>
-  <label>Desired Serial Rate</label>
-  <input type="number" name="i_DesiredSerialRate" id="i_DesiredSerialRateInput">
-  <br>
-  <input type="submit" value="Create">
-</form>
-<p><a href="{% url 'DataCollection:index' %}">Go Back</a></p>
+<!--
+  File Name: TestConfigurations.html
+
+  File Description: HTML page rendering the list of all test configurations
+
+  File History: 2020-11-13: Comments / Organization by Rohit
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Set meta tag for responsive design -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Set page title -->
+    <title>Test Configurations</title>
+    <!-- Load static resources from static/DataCollection -->
+    {% load static %}
+    <!-- Load bootstraps resources (must be done before local loads) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <!-- Load local resources -->
+    <link rel="stylesheet" type="text/css" href="{% static 'DataCollection/style.css' %}">
+  </head>
+  <body>
+    <!-- Create navbar -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'DataCollection:index' %}">FTU Data Collection</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Test Configurations</li>
+      </ol>
+    </nav>
+    <!-- Error handling -->
+    {% if s_Error != "None" %}
+    <div class="alert alert-danger" role="alert">
+      {{s_Error}}
+    </div>
+    {% endif %}
+    {% if b_Saved %}
+    <div class="alert alert-success" role="alert">
+      Object saved successfully!
+    </div>
+    {% endif %}
+    <!-- List test configurations -->
+    <h2>View Existing Configurations</h2>
+    {% if l_TestConfigurations %}
+    <ul>
+      {% for TestConfiguration in l_TestConfigurations %}
+      <li><a href="{% url 'DataCollection:TestConfigurationDetail' TestConfiguration.i_TestId %}">{{ TestConfiguration }}</a></li>
+      {% endfor %}
+    </ul>
+    {% else %}
+      <p>No Test Configurations Exist</p>
+    {% endif %}
+    <!-- Load create test configuration form -->
+    <div class="tc-form-container">
+      <h2>Create Test Configuration</h2>
+      <form action="{% url 'DataCollection:CreateNewTestConfiguration' %}" method="post">{% csrf_token %}
+        <div class="form-group">
+          <label for="i_TestIdInput">Test ID</label>
+          <input type="number" name="i_TestId" id="i_TestIdInput" aria-describedby="TestIdHelp" placeholder="1">
+          <small id="TestIdHelp" class="form-text text-muted">Test ID must be positive and not in use</small>
+        </div>
+        <div class="form-group">
+          <label for="i_TestDescInput">Test Description</label>
+          <input type="text" name="s_TestDesc" id="s_TestDescInput" aria-describedby="TestDescHelp" placeholder="Sample Test Description">
+          <small id="TestIdHelp" class="form-text text-muted">Test Description should describe the configuration for later reference</small>
+        </div>
+        <div class="form-group">
+          <label for="i_DesiredTempInput">Desired Temperature</label>
+          <input type="number" name="i_DesiredTemp" id="i_DesiredTempInput" aria-describedby="TestTempHelp" placeholder="120">
+          <small id="TestTempHelp" class="form-text text-muted">Temperature must be between {{tc.i_MinimumTemperature}} and {{tc.i_MaximumTemperature}} (Centigrade)</small>
+        </div>
+        <div class="form-group">
+          <label for="i_DesiredVoltageInput">Desired Voltage</label>
+          <input type="number" name="i_DesiredVoltage" id="i_DesiredVoltageInput" aria-describedby="TestVoltageHelp" placeholder="10">
+          <small id="TestVoltageHelp" class="form-text text-muted">Voltage must be between {{tc.i_MinimumVoltage}} and {{tc.i_MaximumVoltage}} (Volts)</small>
+        </div>
+        <div class="form-group">
+          <label for="i_DesiredFieldInput">Desired Magnetic Field</label>
+          <input type="number" name="i_DesiredField" id="i_DesiredFieldInput" aria-describedby="TestFieldHelp" placeholder="5">
+          <small id="TestFieldHelp" class="form-text text-muted">Field must be between {{tc.i_MinimumField}} and {{tc.i_MaximumField}} (Milli-Teslas)</small>
+        </div>
+        <div class="form-group">
+          <label for="i_DesiredFieldInput">Desired Test Time</label>
+          <input type="number" name="i_DesiredTestTime" id="i_DesiredTestTimeInput" aria-describedby="TestTimeHelp" placeholder="500">
+          <small id="TestTimeHelp" class="form-text text-muted">Test time must be between {{tc.i_MinimumTestTime}} and {{tc.i_MaximumTestTime}} (seconds)</small>
+        </div>
+        <div class="form-group">
+          <label for="i_DesiredSerialRate">Desired Serial Rate</label>
+          <select name="i_DesiredSerialRate" id="i_DesiredSerialRateInput" aria-describedby="SerialRateHelp">
+            <option value="9600">9600</option>
+          </select>
+          <small id="SerialRateHelp" class="form-text text-muted">Serial Rate must be 9600</small>
+        </div>
+        <input type="submit" value="Create">
+      </form>
+    </div>
+    <!-- Load resources -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+  </body>

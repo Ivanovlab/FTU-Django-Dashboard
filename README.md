@@ -1,6 +1,14 @@
 # FTU-Django-Dashboard - V3
 ## New features
-- Test Experiment inputs are now bounded to only valid test values
+- User can now communicate wirelessly with board
+- Charts are now rendered in the GUI, while still allowing users to download more specific ones
+- User is now notified of errors in human-readable ways and redirected to correct their mistakes
+- Front-end styling added!
+- New tests can easily be defined by adding edge cases into the `DataCollection/tests.py` for each object
+- Automated tests can now be run before launching the server using `python3 manage.py test` which will test that all the cases outlined in `DataCollection/tests.py` are validated
+- Before objects are saved, entries are validated to ensure only valid test configuration inputs are accepted
+	- Object IDs must be unique
+	- Temperature, Voltage, Field, Time must be bounded between User-Hidden variables for each property
 
 ## Configuration Instructions
 Configuration instructions are found [here](https://www.youtube.com/watch?v=tXPInUTOc4o&ab_channel=FTUReliability)
@@ -20,6 +28,8 @@ Configuration instructions are found [here](https://www.youtube.com/watch?v=tXPI
 	4. Navigate to http://127.0.0.1:8000/DataCollection/ in a browser and the app should be up and running
 
 ## Changelog
+2020-11-13: Version 3.0 merged as main branch
+
 2020-11-08: Version 3.0 Started
 
 2020-11-08: Version 2.0 merged as main branch
