@@ -4,25 +4,34 @@
 # Built off of Python3.8-alpine
 FROM python:3.8-alpine
 
-COPY requirements.txt /etc/conf/requirements.txt
+# Send scripts from here to docker
+ENV PATH="/scripts:${PATH}"
 
+# Copy local requirements to docker
+COPY ./requirements.txt /requirements.txt
+
+# Install them and then clean up
 RUN apk add --update --no-cache --virtual .tmp gcc libc-dev linux-headers
 RUN apk add build-base libressl-dev
 RUN apk add --no-cache jpeg-dev zlib-dev
 RUN apk add --no-cache --virtual .build-deps build-base linux-headers
-RUN pip install -r /etc/conf/requirements.txt
+RUN pip install -r /requirements.txt
 RUN apk del .tmp
 RUN apk del .build-deps
 
-RUN apk add --no-cache git
-RUN git clone https://github.com/RohitKochhar/FTU-Django-Dashboard.git
-RUN apk del git
+RUN mkdir /app
+COPY ./app /app
+WORKDIR /app
+COPY ./scripts /scripts
 
-WORKDIR FTU-Django-Dashboard/TestGUI/
-RUN python manage.py makemigrations
-RUN python manage.py migrate --run-syncdb
+RUN chmod +x /scripts/*
 
-EXPOSE 8000
+RUN mkdir -p /vol/web/media
+RUN mkdir -p /vol/web/static
 
-CMD python manage.py runserver 0.0.0.0:8000
+RUN adduser -D user
+RUN chown -R user:user /vol
+RUN chmod -R 755 /vol/web
+USER user
 
+CMD ["entrypoint.sh"]

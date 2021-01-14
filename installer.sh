@@ -1,7 +1,7 @@
 echo "##########################################################################"
 echo "#                                                                        #"
 echo "#       File Name: installer                                             #"
-echo "#       File Description: Installs and configures TestGUI                #"
+echo "#       File Description: Installs and configures app                #"
 echo "#                                                                        #"
 echo "#       File History: 2020-11-5: Created by Rohit                        #"
 echo "#                     2020-11-6: Adapted for V2 by Rohit                 #"
@@ -37,7 +37,7 @@ cd FTU-Django-Dashboard
 echo "##############  Installing required Python packages          #############"
 pip install -r requirements.txt
 # Enter app
-cd TestGUI/
+cd app/
 
 echo "##############  Python packages installed                    #############"
 
@@ -46,14 +46,14 @@ echo "##############  Performing migrations                        #############
 
 python3 manage.py makemigrations DataCollection
 python3 manage.py migrate
-alias go='python3 test/ftu/FTU-Django-Dashboard/TestGUI/manage.py runserver'
+alias go='python3 test/ftu/FTU-Django-Dashboard/app/manage.py runserver'
 echo "##########################################################################"
 echo "                   Installation Complete!                                 "
 echo "                                                                          "
 echo "    Now, all you have to do is:                                           "
 echo "      - cd test/ftu                                                       "
 echo "      - source bin/activate                                               "
-echo '      - cd FTU-Django-Dashboard/TestGUI                                   '
+echo '      - cd FTU-Django-Dashboard/app                                   '
 echo "      - python3 manage.py runserver                                       "
 echo "                                                                          "
 echo "##########################################################################"
