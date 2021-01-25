@@ -21,6 +21,7 @@ import numpy as np
 import os
 import json
 import paho.mqtt.client as mqtt
+import serial
 
 # Class Definitions-------------------------------------------------------------
 class TestConfiguration(models.Model):
@@ -124,6 +125,18 @@ class TestConfiguration(models.Model):
     #       2020-11-12: Created by Rohit
     ############################################################################
     def SendJsonInstructions(self):
+        s_Inst  = self.GetJSONInstructions()
+        try:
+            o_Serial = serial.Serial("COM3")
+            if not o_Serial.isOpen():
+                o_Serial.open()
+            o_Serial.write(bytes(s_Inst, "utf-8"))
+            o_Serial.close()
+
+        except Exception as e:
+            print(e)
+
+    def SendMqttInstructions(self):
         # Use Built-in method to retreive JSON instructions
         s_Inst = self.GetJSONInstructions()
         # Create MQTT client
@@ -131,6 +144,7 @@ class TestConfiguration(models.Model):
         # Connect to the wireless broker
         client.connect("35.173.190.207", 1883, 60)
         # Publish the message to topic
+
         s_Topic = "test"
         client.publish(s_Topic, payload=s_Inst, qos=0, retain = False)
         # Save some memory by deleting the client
