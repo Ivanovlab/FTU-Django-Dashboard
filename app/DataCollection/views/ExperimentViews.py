@@ -1,4 +1,4 @@
-################################################################################
+##################################################################
 #   File Name: ExperimentViews.py
 #
 #   File Author: Rohit Singh
@@ -11,8 +11,8 @@
 #   2020-11-05: ExperimentViews.py created from old views.py
 #   2020-11-02: (views.py) Created by Rohit
 #
-###############################################################################
-# Imports ----------------------------------------------------------------------
+###################################################################
+# Imports ---------------------------------------------------------
 # Django Libraries
 from django.shortcuts import render, redirect
 from django.utils import timezone
@@ -29,13 +29,15 @@ from pathlib import Path
 from email.message import EmailMessage
 from dotenv import load_dotenv
 import smtplib
-# ..... Experiments ............................................................
-################################################################################
+
+
+# ..... Experiments ...............................................
+###################################################################
 #   Function Name: Experiments
 #   Function Author: Rohit
 #   Function Description: Renders the Experiments page
 #   Inputs: request | Outputs: Experiments.html {ctx}
-################################################################################
+###################################################################
 def Experiments(request):
     l_Experiments = Experiment.objects.all()
     l_TestConfigurations = TestConfiguration.objects.all()
@@ -46,13 +48,15 @@ def Experiments(request):
         'b_Saved': False
     }
     return render(request, 'DataCollection/Experiments.html', context)
-################################################################################
+
+
+####################################################################
 #   Function Name: CreateNewExperiment
 #   Function Author: Rohit
 #   Function Description: Creates new Experiment and loads
 #                           Experiments page again
 #   Inputs: request | Outputs: experiments.html {ctx}
-################################################################################
+####################################################################
 def CreateNewExperiment(request):
     # Create our new base Experiment object
     exp = Experiment()
@@ -67,11 +71,11 @@ def CreateNewExperiment(request):
         m_Result.save()
     # save created object
     try:
-        exp.s_ExperimentName    = request.POST.get('s_ExperimentName')
-        exp.i_ExperimentId      = int(request.POST.get('i_ExperimentId'))
-        exp.d_Date              = timezone.now()
+        exp.s_ExperimentName = request.POST.get('s_ExperimentName')
+        exp.i_ExperimentId = int(request.POST.get('i_ExperimentId'))
+        exp.d_Date = timezone.now()
         testConfigId = request.POST.get('m_TestConfiguration')
-        exp.m_TestConfiguration= TestConfiguration.objects.get(pk=testConfigId)
+        exp.m_TestConfiguration = TestConfiguration.objects.get(pk=testConfigId)
         exp.s_ResultsFile = request.POST.get('s_ResultsFile')
         exp.s_EmailAddress = request.POST.get('s_EmailAddress')
         # Check if we need to create a new results object
@@ -98,26 +102,27 @@ def CreateNewExperiment(request):
     }
     return render(request, 'DataCollection/Experiments.html', context)
 
-################################################################################
+
+###################################################################
 #   Function Name: ExperimentDetail
 #   Function Author: Rohit
 #   Function Description: Renders ExperimentDetail.html
 #   Inputs: request | Outputs: ExperimentDetail.html {ctx}
-################################################################################
+###################################################################
 def ExperimentDetail(request, i_ExperimentId):
     # First, get the results of the experiment we are looking at
-    m_Experiment = Experiment.objects.get(i_ExperimentId = i_ExperimentId)
+    m_Experiment = Experiment.objects.get(i_ExperimentId=i_ExperimentId)
     m_TestConfiguration = m_Experiment.m_TestConfiguration
-    m_Result = Result.objects.get(s_FileName = m_Experiment.s_ResultsFile)
+    m_Result = Result.objects.get(s_FileName=m_Experiment.s_ResultsFile)
 
     # Next, send the results file to the javascript to be handled
-    M_data  = m_Result.LoadResultsAsMatrix()
+    M_data = m_Result.LoadResultsAsMatrix()
     i_NumCols = np.shape(M_data)[1]
 
     # Due to memory constraints, only define 5 columns to send
-    columnIndices   = [1,2,7,8,9]
-    labels          = []
-    datas           = []
+    columnIndices = [1, 2, 7, 8, 9]
+    labels = []
+    datas = []
     for idx in columnIndices:
         m_Result.i_ColumnIdx = idx
         labels.append(m_Result.GetColumnByIndex()[0])
@@ -132,16 +137,17 @@ def ExperimentDetail(request, i_ExperimentId):
 
     return render(request, 'DataCollection/ExperimentDetail.html', ctx)
 
-################################################################################
+
+######################################################################
 #   Function Name: DownloadResults
 #   Function Author: Rohit
 #   Function Description: Downloads .csv file
 #   Inputs: request | Outputs: .csv file
-################################################################################
+######################################################################
 def DownloadResults(request, s_ResultsFile):
     print(s_ResultsFile)
-    m_Result        = Result.objects.get(s_FileName=s_ResultsFile)
-    s_csvFilePath   = m_Result.LoadResultsFilepath()
+    m_Result = Result.objects.get(s_FileName=s_ResultsFile)
+    s_csvFilePath = m_Result.LoadResultsFilepath()
     if s_csvFilePath == -1:
         raise Http404
     else:
@@ -150,7 +156,8 @@ def DownloadResults(request, s_ResultsFile):
             response['Content-Disposition'] = 'inline; filename=' + os.path.basename(s_csvFilePath)
             return response
 
-###############################################################################
+
+#####################################################################
 #   Function Name: GeneratePlot
 #   Function Author: Rohit
 #   Function Description:   Creates plot from csv data
@@ -162,7 +169,7 @@ def DownloadResults(request, s_ResultsFile):
 #   History:
 #       2020-11-03: Sliding Window Measurements added
 #       2020-11-02: Created by Rohit
-################################################################################
+######################################################################
 # TODO: If the path doesn't exist, give the user an error
 # TODO: Add more error case handling
 def GeneratePlot(request, s_ResultsFile):
@@ -171,15 +178,15 @@ def GeneratePlot(request, s_ResultsFile):
     # load results as matrix
     M_data = m_Result.LoadResultsAsMatrix()
     # Retrieve Data from the form
-    s_XValuesLabel  = request.POST.get('s_XValuesLabel')
-    s_YValuesLabel  = request.POST.get('s_YValuesLabel')
-    i_StartTime     = request.POST.get('i_StartTime')
-    i_EndTime       = request.POST.get('i_EndTime')
+    s_XValuesLabel = request.POST.get('s_XValuesLabel')
+    s_YValuesLabel = request.POST.get('s_YValuesLabel')
+    i_StartTime = request.POST.get('i_StartTime')
+    i_EndTime = request.POST.get('i_EndTime')
     # TODO: Fix this logic
     b_spliceData = not (i_StartTime == i_EndTime)
     if b_spliceData:
-        i_StartTimeIdx  = -1
-        i_EndTimeIdx    = -1
+        i_StartTimeIdx = -1
+        i_EndTimeIdx = -1
     # Create blank arrays for the data to be plotted
     a_XValues = []
     a_YValues = []
@@ -197,7 +204,7 @@ def GeneratePlot(request, s_ResultsFile):
     # Clear any previously saved plot info
     plt.cla()
     # If the user doesn't want their data spliced, don't!
-    if b_spliceData == False:
+    if b_spliceData is False:
         plt.plot(a_XValues, a_YValues)
     # Else if the user does want their data spliced, do it!
     else:
@@ -218,7 +225,9 @@ def GeneratePlot(request, s_ResultsFile):
             return response
     # TODO: Error handling here
     return redirect('/DataCollection/Experiments')
-###############################################################################
+
+
+####################################################################
 #   Function Name: SendEmail
 #   Function Author: Rohit
 #   Function Description:   Sends all test info to email
@@ -227,25 +236,25 @@ def GeneratePlot(request, s_ResultsFile):
 #
 #   History:
 #       2020-11-05: Created by Rohit
-################################################################################
+####################################################################
 # TODO: Fix this Function
 def sendEmail(experiment):
     # Get secrets
     load_dotenv('./DataCollection/.env')
-    s_EmailAddress  = os.getenv("EMAILADDRESS")
+    s_EmailAddress = os.getenv("EMAILADDRESS")
     s_EmailPassword = os.getenv("EMAILPASSWORD")
     # Create Email message
     msg = EmailMessage()
-    msg['Subject']  = f'FTU Test Results: {experiment.s_ExperimentName}'
-    msg['From']     = s_EmailAddress
-    msg['To']       = experiment.s_EmailAddress
+    msg['Subject'] = f'FTU Test Results: {experiment.s_ExperimentName}'
+    msg['From'] = s_EmailAddress
+    msg['To'] = experiment.s_EmailAddress
     s_FilePath = './DataCollection/TestResults/' + experiment.s_ResultsFile
     filePath = os.path.join(settings.MEDIA_ROOT, s_FilePath)
     # Verify the files existence
     if os.path.exists(filePath):
         with open(filePath, 'rb') as fh:
             file = fh.read()
-        #msg.add_attachment(file, maintype='doc', subtype='csv', filename=f"FTUTestResults")
+        # msg.add_attachment(file, maintype='doc', subtype='csv', filename=f"FTUTestResults")
     # Create Email Body
     a_EmailBodyArray = []
     a_EmailBodyArray.append(f"{experiment.s_ExperimentName} was created at {experiment.d_Date}\n")
@@ -263,7 +272,8 @@ def sendEmail(experiment):
         smtp.login(user=s_EmailAddress, password=s_EmailPassword)
         smtp.send_message(msg)
 
-###############################################################################
+
+#####################################################################
 #   Function Name: GenerateLineGraph
 #   Function Author: Rohit
 #   Function Description:   Creates line graph
@@ -272,21 +282,21 @@ def sendEmail(experiment):
 #
 #   History:
 #       2020-11-10: Created by Rohit
-################################################################################
+######################################################################
 def GenerateLineGraph(request, i_ExperimentId):
     # First, get the results of the experiment we are looking at
-    m_Experiment = Experiment.objects.get(i_ExperimentId = i_ExperimentId)
+    m_Experiment = Experiment.objects.get(i_ExperimentId=i_ExperimentId)
     m_TestConfiguration = m_Experiment.m_TestConfiguration
-    m_Result = Result.objects.get(s_FileName = m_Experiment.s_ResultsFile)
+    m_Result = Result.objects.get(s_FileName=m_Experiment.s_ResultsFile)
 
     # Next, send the results file to the javascript to be handled
-    M_data  = m_Result.LoadResultsAsMatrix()
+    M_data = m_Result.LoadResultsAsMatrix()
     i_NumCols = np.shape(M_data)[1]
 
     # Due to memory constraints, only define 5 columns to send
-    columnIndices   = [1,2,7,8,9]
-    labels          = []
-    datas           = []
+    columnIndices = [1, 2, 7, 8, 9]
+    labels = []
+    datas = []
     # Go through the columns and sort them accordingly
     for idx in columnIndices:
         m_Result.i_ColumnIdx = idx
